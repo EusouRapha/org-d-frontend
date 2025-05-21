@@ -1,9 +1,7 @@
-// types/next-auth.d.ts
-import NextAuth, { DefaultSession, DefaultUser } from "next-auth";
+import { DefaultSession, DefaultUser } from "next-auth";
 
 declare module "next-auth" {
   interface User extends DefaultUser {
-    // Torna `id` opcional ou altera para string
     id?: string;
     username: string;
     access_token: string;
@@ -11,7 +9,6 @@ declare module "next-auth" {
   }
 
   interface Session extends DefaultSession {
-    // Token de acesso que vamos injetar
     access_token: string;
     expires: number;
     user: {
@@ -22,7 +19,6 @@ declare module "next-auth" {
     };
   }
 
-  // Se quiser também tipar o JWT:
   interface JWT extends DefaultJWT {
     id: string;
     username: string;

@@ -13,13 +13,16 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+
     "plugins": [
       {
         "name": "next"
       }
     ],
+    "baseUrl": "./",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@/pages/*": ["./src/components/pages/*"],
     }
   },
   "include": [    
@@ -27,8 +30,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/**/*", // Ensure this includes the `types` folder
-    "src/types/next-auth.d.ts" // Explicitly include the type file if needed
+    "src/**/*", 
+    "src/types/next-auth.d.ts"
 ],
   "exclude": ["node_modules"]
 }

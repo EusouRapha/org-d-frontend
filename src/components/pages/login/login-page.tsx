@@ -20,7 +20,7 @@ const formSchema = z.object({
   password: z.string().min(1, { message: "senha invalida" }),
 });
 
-export default function LoginForm() {
+export default function LoginPage() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -30,7 +30,7 @@ export default function LoginForm() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const result = await signIn("credentials", {
+    await signIn("credentials", {
       email: values.email,
       password: values.password,
       redirect: true,
@@ -39,7 +39,7 @@ export default function LoginForm() {
   }
 
   return (
-    <div className="flex justify-center items-center h-screen">
+    <div className="flex justify-center items-center w-screen h-screen bg-yellow-300">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <FormField
