@@ -8,18 +8,18 @@ export const authOptions: NextAuthOptions = {
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: { label: "email", type: "text", placeholder: "jsmith" },
+        cpf: { label: "cpf", type: "text", placeholder: "cpf" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        const { email, password } = credentials as any;
+        const { cpf, password } = credentials as any;
 
         try {
           // Use o axios para fazer a chamada à API
           const response = await axios.post(
             "http://localhost:4000/auth/login",
             {
-              email,
+              cpf,
               password,
             }
           );
@@ -28,8 +28,9 @@ export const authOptions: NextAuthOptions = {
           if (user) {
             return {
               id: user.id,
-              username: user.username,
-              email: user.email,
+              name: user.username,
+              cpf: user.cpf,
+              phone_number: user.phone_number,
               access_token: user.access_token,
               expires: user.expiresIn.toString(),
             };
@@ -53,21 +54,22 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id as string;
-        token.username = user.username as string;
-        token.email = user.email as string;
+        token.name = user.name as string;
+        token.cpf = user.cpf as string;
+        token.phone_number = user.phone_number as string;
         token.access_token = user.access_token as string;
         token.expires = user.expires as number;
       }
       return token;
     },
     async session({ session, token }) {
+      session.user.id = token.id as number;
+      session.user.name = token.name as string;
+      session.user.cpf = token.cpf as string;
+      session.user.phone_number = token.phone_number as string;
       session.access_token = token.access_token as string;
-      session.user.id = token.id as string;
-      session.user.username = token.username as string;
-      session.user.email = token.email as string;
       session.expires = token.expires as number;
 
-      console.log("Session:", session);
       return session;
     },
   },

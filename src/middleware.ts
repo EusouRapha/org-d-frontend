@@ -7,12 +7,20 @@ export function middleware(request: NextRequest) {
     request.cookies.get("__Secure-next-auth.session-token");
 
   const isAuthPage = request.nextUrl.pathname === "/login";
+  const isRegisterPage = request.nextUrl.pathname === "/registrar";
 
-  if (!token && !isAuthPage) {
+  // Permitir acesso à página de registro e login sem token
+  if (!token && (isAuthPage || isRegisterPage)) {
+    return NextResponse.next();
+  }
+
+  // Redirecionar para login se não houver token e não for página de login ou registro
+  if (!token) {
     const loginUrl = new URL("/login", request.url);
     return NextResponse.redirect(loginUrl);
   }
 
+  // Redirecionar para a página inicial se já estiver logado e tentar acessar a página de login
   if (token && isAuthPage) {
     const homeUrl = new URL("/", request.url);
     return NextResponse.redirect(homeUrl);

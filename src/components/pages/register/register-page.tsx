@@ -1,7 +1,8 @@
 import { H1, H3 } from "@/components/ui/typography";
-import LoginForm from "./ui/login-form";
+
 import Image from "next/image";
 import Logo from "../../../assets/Maquininha.svg";
+import RegisterForm from "./ui/register-form";
 
 export default function LoginPage() {
   return (
@@ -9,7 +10,7 @@ export default function LoginPage() {
       <div className="flex flex-col w-full h-screen align-center text-center items-center">
         <div className="flex flex-col justify-center items-center w-full h-full ">
           <H1 className="text-blue-950 font-semibold">
-            Seja bem vindo ao ORG-D
+            Pronto para se tornar um cliente? Registre-se aqui
           </H1>
           <Image
             className="p-8"
@@ -19,11 +20,11 @@ export default function LoginPage() {
             height={200}
           ></Image>
           <H3 className="text-blue-900 whitespace-pre-line">
-            O banco que irá organizar sua vida financeira
+            ORG-D. O banco que irá organizar sua vida financeira
           </H3>
         </div>
         <div className="flex flex-col items-center w-full h-full ">
-          <LoginForm />
+          <RegisterForm />
         </div>
       </div>
     </>

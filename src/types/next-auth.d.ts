@@ -2,8 +2,10 @@ import { DefaultSession, DefaultUser } from "next-auth";
 
 declare module "next-auth" {
   interface User extends DefaultUser {
-    id?: string;
-    username: string;
+    id?: number;
+    name: string;
+    cpf: string;
+    phone_number: string;
     access_token: string;
     expires: number;
   }
@@ -12,17 +14,18 @@ declare module "next-auth" {
     access_token: string;
     expires: number;
     user: {
-      access_token: string;
-      id: string;
-      username: string;
-      email: string;
+      id: number;
+      name: string;
+      cpf: string;
+      phone_number: string;
     };
   }
 
   interface JWT extends DefaultJWT {
     id: string;
-    username: string;
-    email: string;
+    name: string;
+    cpf: string;
+    phone_number: string;
     access_token: string;
     expires: number;
   }

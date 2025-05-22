@@ -12,10 +12,11 @@ export default function AppWrapper({
 }) {
   const pathname = usePathname(); // Obtém a rota atual
   const isLoginPage = pathname === "/login"; // Verifica se é a página de login
+  const isRegisterPage = pathname === "/registrar"; // Verifica se é a página de registro
   return (
     <SessionProvider session={session}>
       <ReactQueryWrapper>
-        {!isLoginPage ? (
+        {!isLoginPage && !isRegisterPage ? (
           <div className="flex flex-col h-screen">
             <header className="fixed top-0">header</header>
             <main>{children}</main>
