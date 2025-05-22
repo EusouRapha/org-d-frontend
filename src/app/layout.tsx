@@ -1,16 +1,12 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Red_Hat_Display } from "next/font/google";
 import AppWrapper from "../wrappers/app-wrapper";
-import "./globals.css";
+import "../assets/globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const redHatDisplay = Red_Hat_Display({
+  variable: "--font-red-hat-display",
+  weight: ["300", "400", "500", "700", "900"],
+  style: "normal",
 });
 
 export const metadata: Metadata = {
@@ -28,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="w-full h-full">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased w-full h-full`}
+        className={`${redHatDisplay.className}  ${redHatDisplay.variable} antialiased w-full h-full`}
       >
         <AppWrapper session={session}>{children}</AppWrapper>
       </body>
