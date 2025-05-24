@@ -28,7 +28,7 @@ export const authOptions: NextAuthOptions = {
           if (user) {
             return {
               id: user.id,
-              name: user.username,
+              name: user.name,
               cpf: user.cpf,
               phone_number: user.phone_number,
               access_token: user.access_token,

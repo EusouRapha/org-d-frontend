@@ -1,43 +1,61 @@
 "use client";
+import { CardButton } from "@/components/ui/card-button";
+import {
+  handleAccountsRedirect,
+  handleDepositRedirect,
+  handleStatementRedirect,
+  handleWithdrawRedirect,
+} from "@/lib/utils";
+import {
+  BanknoteArrowDown,
+  BanknoteArrowUp,
+  LogOut,
+  Receipt,
+  UserPlus,
+} from "lucide-react";
 import { signOut } from "next-auth/react";
-import React from "react";
-import { useQuery } from "react-query";
 
 export default function HomePage() {
-  const [fetchUsers, setFetchUsers] = React.useState(false); // Estado para controlar a execução da query
-
-  const usersQuery = useQuery<any>(["users", { page: 1 }], {
-    enabled: fetchUsers,
-  });
-  async function onClick() {
-    console.log(usersQuery?.data);
-    setFetchUsers(true); // Define fetchUsers como true para executar a query
-    console.log(usersQuery?.data);
-  }
+  const cardButtons = [
+    {
+      label: "Contas",
+      icon: <UserPlus size={48} />,
+      onClick: () => handleAccountsRedirect(),
+    },
+    {
+      label: "Saque",
+      icon: <BanknoteArrowDown size={48} />,
+      onClick: () => handleWithdrawRedirect(),
+    },
+    {
+      label: "Deposito",
+      icon: <BanknoteArrowUp size={48} />,
+      onClick: () => handleDepositRedirect(),
+    },
+    {
+      label: "Extrato",
+      icon: <Receipt size={48} />,
+      onClick: () => handleStatementRedirect(),
+    },
+    {
+      label: "Sair",
+      icon: <LogOut size={48} />,
+      onClick: () => signOut(),
+    },
+  ];
 
   return (
     <>
-      <div className="flex justify-center items-center h-screen bg-green-500">
-        <>
-          <h1 className="font-black p-4"></h1>
-          <button
-            className="p-4 m-4 gap-4 border-amber-400 border-4"
-            onClick={() => onClick()}
+      <div className="flex flex-col justify-center items-center h-full gap-8 xl:flex-row">
+        {cardButtons.map((button) => (
+          <CardButton
+            key={button.label}
+            icon={button.icon}
+            onClick={button.onClick}
           >
-            {" "}
-            chamada da rota de usuarios
-          </button>
-          <button onClick={() => signOut()}>Deslogar</button>
-          <div>
-            {usersQuery?.data && (
-              <ul>
-                {usersQuery?.data.map((user: any) => (
-                  <li key={user.name}>{user.name}</li>
-                ))}
-              </ul>
-            )}
-          </div>
-        </>
+            {button.label}
+          </CardButton>
+        ))}
       </div>
     </>
   );

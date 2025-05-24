@@ -14,6 +14,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { toast, Toaster } from "sonner";
 import { z } from "zod";
 
 export default function LoginForm() {
@@ -39,23 +40,34 @@ export default function LoginForm() {
       return value.slice(0, 14);
     }
     return value
-      .replace(/\D/g, "") // Remove caracteres não numéricos
-      .replace(/(\d{3})(\d)/, "$1.$2") // Adiciona o primeiro ponto
-      .replace(/(\d{3})(\d)/, "$1.$2") // Adiciona o segundo ponto
-      .replace(/(\d{3})(\d{1,2})$/, "$1-$2"); // Adiciona o traço
+      .replace(/\D/g, "") //
+      .replace(/(\d{3})(\d)/, "$1.$2") //
+      .replace(/(\d{3})(\d)/, "$1.$2") //
+      .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
   }
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    await signIn("credentials", {
+    const result = await signIn("credentials", {
       cpf: values.cpf,
       password: values.password,
-      redirect: true,
-      callbackUrl: "/",
+      redirect: false,
     });
+
+    if (result?.error) {
+      toast.error("Erro ao fazer login. Verifique suas credenciais.", {
+        style: {
+          background: "red",
+          color: "white",
+        },
+      });
+      return;
+    }
+    router.push("/");
   }
 
   return (
     <div className="flex flex-col items-center w-full h-full ">
+      <Toaster position="top-right" />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <FormField
@@ -63,14 +75,14 @@ export default function LoginForm() {
             name="cpf"
             render={({ field }) => (
               <FormItem className="pb-2">
-                <FormLabel className="text-blue-950 cursor-not-allowed">
+                <FormLabel className="text-org-d-pessego cursor-not-allowed text-2xl">
                   CPF
                 </FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Digite aqui seu cpf"
                     type="cpf"
-                    className="w-lg h-12 !text-lg "
+                    className="w-lg h-12 !text-lg bg-org-d-pessego"
                     {...field}
                     onChange={(e) => {
                       field.onChange(formatCPF(e.target.value));
@@ -86,14 +98,14 @@ export default function LoginForm() {
             name="password"
             render={({ field }) => (
               <FormItem className="pb-2">
-                <FormLabel className="text-blue-950 cursor-not-allowed">
+                <FormLabel className="text-org-d-pessego text-2xl">
                   Senha
                 </FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Digite aqui sua senha"
                     type="password"
-                    className="w-lg h-12"
+                    className="w-lg h-12 bg-org-d-pessego  !text-lg"
                     {...field}
                   />
                 </FormControl>
@@ -101,12 +113,20 @@ export default function LoginForm() {
               </FormItem>
             )}
           />
-          <div className="flex flex-row gap-2 items-center justify-evenly">
-            <Button type="button" onClick={() => router.push("/registrar")}>
-              Cadastrar
+          <div className="flex flex-row gap-6 items-start pt-4">
+            <Button
+              type="submit"
+              className="bg-org-d-pessego text-2xl text-org-d-green hover:bg-green-950 hover:text-org-d-pessego transition duration-300 ease-in-out"
+              onClick={() => form.handleSubmit(onSubmit)}
+            >
+              Logar
             </Button>
-            <Button type="submit" onClick={() => form.handleSubmit(onSubmit)}>
-              Enviar
+            <Button
+              type="button"
+              onClick={() => router.push("/registrar")}
+              className="bg-org-d-pessego text-2xl text-org-d-green hover:bg-green-950 hover:text-org-d-pessego transition duration-300 ease-in-out"
+            >
+              Cadastrar
             </Button>
           </div>
         </form>

@@ -1,7 +1,8 @@
 "use client";
+import Sidebar from "@/components/ui/side-bar";
 import { SessionProvider } from "next-auth/react";
-import ReactQueryWrapper from "./react-query-wrapper";
 import { usePathname } from "next/navigation";
+import ReactQueryWrapper from "./react-query-wrapper";
 
 export default function AppWrapper({
   children,
@@ -17,12 +18,9 @@ export default function AppWrapper({
     <SessionProvider session={session}>
       <ReactQueryWrapper>
         {!isLoginPage && !isRegisterPage ? (
-          <div className="flex flex-col h-screen">
-            <header className="fixed top-0">header</header>
-            <main>{children}</main>
-            <footer className="fixed bottom-0">
-              <h1>footer</h1>
-            </footer>
+          <div className="flex flex-row h-screen overflow-hidden">
+            <Sidebar />
+            <main className="flex-grow bg-org-d-pessego">{children}</main>
           </div>
         ) : (
           <main>{children}</main>

@@ -16,7 +16,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -119,14 +119,14 @@ export default function RegisterForm() {
                 name="name"
                 render={({ field }) => (
                   <FormItem className="pb-2">
-                    <FormLabel className="text-blue-950 cursor-not-allowed">
-                      CPF
+                    <FormLabel className="text-org-d-pessego cursor-not-allowed text-2xl">
+                      Nome
                     </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Digite aqui seu nome"
                         type="text"
-                        className="h-12 !text-lg"
+                        className="h-12 !text-lg bg-org-d-pessego"
                         {...field}
                       />
                     </FormControl>
@@ -135,20 +135,20 @@ export default function RegisterForm() {
                 )}
               />
             </div>
-            <div className="flex flex-row gap-2">
+            <div className="flex flex-row gap-6">
               <FormField
                 control={form.control}
                 name="cpf"
                 render={({ field }) => (
                   <FormItem className="pb-2">
-                    <FormLabel className="text-blue-950 cursor-not-allowed">
+                    <FormLabel className="text-org-d-pessego cursor-not-allowed text-2xl">
                       CPF
                     </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Digite aqui seu cpf"
                         type="cpf"
-                        className="h-12 !text-lg"
+                        className="h-12 !text-lg bg-org-d-pessego"
                         {...field}
                         onChange={(e) => {
                           field.onChange(formatCPF(e.target.value));
@@ -164,14 +164,14 @@ export default function RegisterForm() {
                 name="password"
                 render={({ field }) => (
                   <FormItem className="pb-2">
-                    <FormLabel className="text-blue-950 cursor-not-allowed">
+                    <FormLabel className="text-org-d-pessego cursor-not-allowed text-2xl">
                       Senha
                     </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Digite aqui sua senha"
                         type="password"
-                        className="h-12 !text-lg"
+                        className="h-12 !text-lg bg-org-d-pessego"
                         {...field}
                       />
                     </FormControl>
@@ -184,14 +184,14 @@ export default function RegisterForm() {
                 name="phone_number"
                 render={({ field }) => (
                   <FormItem className="pb-2">
-                    <FormLabel className="text-blue-950 cursor-not-allowed">
+                    <FormLabel className="text-org-d-pessego text-2xl">
                       Telefone
                     </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Digite aqui seu telefone"
                         type="text"
-                        className="h-12 !text-lg"
+                        className="h-12 !text-lg bg-org-d-pessego"
                         {...field}
                         onChange={(e) => {
                           field.onChange(formatPhoneNumber(e.target.value));
@@ -203,9 +203,22 @@ export default function RegisterForm() {
                 )}
               />
             </div>
-            <Button type="submit" onClick={() => form.handleSubmit(onSubmit)}>
-              Enviar
-            </Button>
+            <div className="flex flex-row gap-6 items-start pt-4">
+              <Button
+                type="submit"
+                className="bg-org-d-pessego text-2xl text-org-d-green hover:bg-green-950 hover:text-org-d-pessego transition duration-300 ease-in-out"
+                onClick={() => form.handleSubmit(onSubmit)}
+              >
+                Registrar
+              </Button>
+              <Button
+                type="button"
+                onClick={() => router.push("/login")}
+                className="bg-org-d-pessego text-2xl text-org-d-green hover:bg-green-950 hover:text-org-d-pessego transition duration-300 ease-in-out"
+              >
+                Cancelar
+              </Button>
+            </div>
           </form>
         </Form>
       </div>

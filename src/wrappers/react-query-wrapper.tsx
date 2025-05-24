@@ -1,11 +1,14 @@
 "use client";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import {
-  QueryClientProvider,
   QueryClient,
+  QueryClientProvider,
   QueryFunctionContext,
-} from "react-query";
+} from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 export default function AppWrapper({
   children,
@@ -14,7 +17,12 @@ export default function AppWrapper({
 }) {
   const session = useSession();
   const defaultQueryFn = async ({ queryKey }: QueryFunctionContext) => {
-    const [endpoint, params] = queryKey as [string, Record<string, any>?];
+    const endpoint = queryKey[0] as string;
+    const params = queryKey[1] as Record<string, any> | undefined;
+
+    if (!endpoint) {
+      throw new Error("O endpoint não foi definido no queryKey.");
+    }
 
     const queryResponse = await axios.get(`http://localhost:4000/${endpoint}`, {
       headers: {
@@ -22,18 +30,20 @@ export default function AppWrapper({
       },
       params,
     });
+
     return queryResponse.data;
   };
 
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        queryFn: defaultQueryFn,
-      },
+  queryClient.setDefaultOptions({
+    queries: {
+      queryFn: defaultQueryFn,
     },
   });
 
   return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    <QueryClientProvider client={queryClient}>
+      {children}
+      <ReactQueryDevtools initialIsOpen={true} client={queryClient} />
+    </QueryClientProvider>
   );
 }

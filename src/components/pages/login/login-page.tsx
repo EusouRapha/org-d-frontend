@@ -1,24 +1,21 @@
 import { H1, H3 } from "@/components/ui/typography";
+import { CircleDollarSign } from "lucide-react";
 import LoginForm from "./ui/login-form";
-import Image from "next/image";
-import Logo from "../../../assets/Maquininha.svg";
 
 export default function LoginPage() {
   return (
     <>
-      <div className="flex flex-col w-full h-screen align-center text-center items-center">
+      <div className="flex flex-col w-full h-screen align-center text-center items-center bg-org-d-green">
         <div className="flex flex-col justify-center items-center w-full h-full ">
-          <H1 className="text-blue-950 font-semibold">
+          <H1 className="text-org-d-pessego p-4 font-bold">
             Seja bem vindo ao ORG-D
           </H1>
-          <Image
-            className="p-8"
-            src={Logo}
-            alt={"Org-d Logo"}
-            width={200}
-            height={200}
-          ></Image>
-          <H3 className="text-blue-900 whitespace-pre-line">
+          <CircleDollarSign
+            size={150}
+            strokeWidth={1}
+            className="stroke-org-d-pessego"
+          />
+          <H3 className="text-org-d-pessego whitespace-pre-line pt-4 font-semibold">
             O banco que irá organizar sua vida financeira
           </H3>
         </div>

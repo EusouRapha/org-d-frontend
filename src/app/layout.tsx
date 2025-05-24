@@ -1,16 +1,13 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Red_Hat_Display } from "next/font/google";
 import AppWrapper from "../wrappers/app-wrapper";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const redHatDisplay = Red_Hat_Display({
+  variable: "--font-red-hat-display",
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
+  style: ["normal", "italic"], // Estilos normal e itálico
 });
 
 export const metadata: Metadata = {
@@ -26,10 +23,8 @@ export default function RootLayout({
   session: never;
 }>) {
   return (
-    <html lang="en" className="w-full h-full">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased w-full h-full`}
-      >
+    <html suppressHydrationWarning lang="en" className="w-full h-full">
+      <body className={`${redHatDisplay.className} antialiased w-full h-full`}>
         <AppWrapper session={session}>{children}</AppWrapper>
       </body>
     </html>
