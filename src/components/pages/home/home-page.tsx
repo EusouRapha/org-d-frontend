@@ -1,5 +1,6 @@
 "use client";
 import { CardButton } from "@/components/ui/card-button";
+import { H1 } from "@/components/ui/typography";
 import {
   handleAccountsRedirect,
   handleDepositRedirect,
@@ -46,12 +47,18 @@ export default function HomePage() {
 
   return (
     <>
-      <div className="flex flex-col justify-center items-center h-full gap-8 xl:flex-row">
+      <div suppressHydrationWarning>
+        <H1 className="text-org-d-green font-bold text-center pt-8">
+          Seja bem vindo(a) ao ORG-D
+        </H1>
+      </div>
+      <div className="flex flex-row justify-center items-center gap-8 max-[1650px]:flex-col h-full pb-36">
         {cardButtons.map((button) => (
           <CardButton
             key={button.label}
             icon={button.icon}
             onClick={button.onClick}
+            className="max-[1650px]:w-56 max-[1650px]:h-32"
           >
             {button.label}
           </CardButton>
