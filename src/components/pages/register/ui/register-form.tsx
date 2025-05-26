@@ -1,5 +1,6 @@
 "use client";
 
+import api from "@/app/api/auth/[...nextauth]/axios";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -12,11 +13,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Toaster } from "@/components/ui/sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
-import { useRouter } from "next/navigation";
-import React from "react";
-import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -67,7 +66,7 @@ export default function RegisterForm() {
 
   const mutation = useMutation({
     mutationFn: (newClient: z.infer<typeof formSchema>) => {
-      return axios.post("http://localhost:4000/clients", newClient);
+      return api.post("/clients", newClient);
     },
     onSuccess: () => {
       const successMessage = "Cliente cadastrado com sucesso!";

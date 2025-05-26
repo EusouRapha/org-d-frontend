@@ -1,10 +1,9 @@
 import api from "@/app/api/auth/[...nextauth]/axios";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 type Account = {
   accountNumber: string;
-  balance: number;
 };
 
 export function useGetAccountQuery(clientId: number) {
@@ -15,14 +14,18 @@ export function useGetAccountQuery(clientId: number) {
   return getAccountsQuery;
 }
 
-export function useCreateAccountMutation(access_token: string | undefined) {
-  const queryClient = useQueryClient();
+export function useCreateDepositMutation(access_token: string | undefined) {
+  // const queryClient = useQueryClient();
   const mutation = useMutation({
-    mutationFn: (clientId: number) => {
+    mutationFn: (data: { accountNumber: string; value: number }) => {
       const token = access_token ?? "";
       return api.post(
-        "http://localhost:4000/accounts",
-        { client_id: clientId },
+        "launches",
+        {
+          account_number: data.accountNumber,
+          value: data.value,
+          type: "CREDIT",
+        },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -30,12 +33,8 @@ export function useCreateAccountMutation(access_token: string | undefined) {
         }
       );
     },
-    onSuccess: (_data, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: [`accounts/${variables}`],
-      });
-
-      const successMessage = "Conta criada com sucesso!";
+    onSuccess: () => {
+      const successMessage = "Depósito realizado com sucesso!";
       toast.success(successMessage, {
         style: {
           background: "green",
@@ -44,7 +43,7 @@ export function useCreateAccountMutation(access_token: string | undefined) {
       });
     },
     onError: () => {
-      const errorMessage = "Ocorreu um erro ao criar uma conta";
+      const errorMessage = "Ocorreu um erro ao realizar o depósito";
       toast.error(errorMessage, {
         style: {
           background: "red",

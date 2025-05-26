@@ -1,12 +1,12 @@
 "use client";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import axios from "axios";
-import { useSession } from "next-auth/react";
+import api from "@/app/api/auth/[...nextauth]/axios";
 import {
   QueryClient,
   QueryClientProvider,
   QueryFunctionContext,
 } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { useSession } from "next-auth/react";
 
 const queryClient = new QueryClient();
 
@@ -24,7 +24,7 @@ export default function AppWrapper({
       throw new Error("O endpoint não foi definido no queryKey.");
     }
 
-    const queryResponse = await axios.get(`http://localhost:4000/${endpoint}`, {
+    const queryResponse = await api.get(`${endpoint}`, {
       headers: {
         Authorization: `Bearer ${session.data?.access_token}`,
       },

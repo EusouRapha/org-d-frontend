@@ -65,6 +65,21 @@ export default function LoginForm() {
     router.push("/");
   }
 
+  const buttons = [
+    {
+      label: "Logar",
+      onClick: form.handleSubmit(onSubmit),
+      className:
+        "bg-org-d-pessego text-2xl text-org-d-green hover:bg-green-950 hover:text-org-d-pessego transition duration-300 ease-in-out cursor-pointer",
+    },
+    {
+      label: "Cadastrar",
+      onClick: () => router.push("/registrar"),
+      className:
+        "bg-org-d-pessego text-2xl text-org-d-green hover:bg-green-950 hover:text-org-d-pessego transition duration-300 ease-in-out cursor-pointer",
+    },
+  ];
+
   return (
     <div className="flex flex-col items-center w-full h-full ">
       <Toaster position="top-right" />
@@ -114,20 +129,16 @@ export default function LoginForm() {
             )}
           />
           <div className="flex flex-row gap-6 items-start pt-4">
-            <Button
-              type="submit"
-              className="bg-org-d-pessego text-2xl text-org-d-green hover:bg-green-950 hover:text-org-d-pessego transition duration-300 ease-in-out"
-              onClick={() => form.handleSubmit(onSubmit)}
-            >
-              Logar
-            </Button>
-            <Button
-              type="button"
-              onClick={() => router.push("/registrar")}
-              className="bg-org-d-pessego text-2xl text-org-d-green hover:bg-green-950 hover:text-org-d-pessego transition duration-300 ease-in-out"
-            >
-              Cadastrar
-            </Button>
+            {buttons.map((button, index) => (
+              <Button
+                key={index}
+                type="button"
+                className={button.className}
+                onClick={button.onClick}
+              >
+                {button.label}
+              </Button>
+            ))}
           </div>
         </form>
       </Form>

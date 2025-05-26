@@ -1,6 +1,6 @@
-import axios from "axios";
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import api from "./axios";
 
 export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET as string,
@@ -15,16 +15,13 @@ export const authOptions: NextAuthOptions = {
         const { cpf, password } = credentials as any;
 
         try {
-          // Use o axios para fazer a chamada à API
-          const response = await axios.post(
-            "http://localhost:4000/auth/login",
-            {
-              cpf,
-              password,
-            }
-          );
+          const response = await api.post("/auth/login", {
+            cpf,
+            password,
+          });
 
           const user = response.data;
+
           if (user) {
             return {
               id: user.id,

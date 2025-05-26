@@ -38,7 +38,19 @@ export function DataTable<TValue>({
     []
   );
 
-  const getAccountsQuery = useGetAccountQuery(clientId);
+  const [pagination, setPagination] = React.useState({
+    pageIndex: 0,
+    pageSize: 5,
+  });
+
+  const handleChangePageIndex = (pageIndex: number) => {
+    setPagination((prev) => ({
+      ...prev,
+      pageIndex,
+    }));
+  };
+
+  const getAccountsQuery = useGetAccountQuery(clientId ?? 0);
 
   const table = useReactTable({
     data: getAccountsQuery.data ?? [],
@@ -49,6 +61,10 @@ export function DataTable<TValue>({
     getFilteredRowModel: getFilteredRowModel(),
     state: {
       columnFilters,
+      pagination: {
+        pageIndex: pagination.pageIndex,
+        pageSize: pagination.pageSize,
+      },
     },
   });
 
@@ -118,8 +134,11 @@ export function DataTable<TValue>({
           )}
         </TableBody>
       </Table>
-      <div className="flex items-center justify-end space-x-2">
-        <Pagination table={table} />
+      <div className="flex items-center justify-between space-x-2">
+        <Pagination
+          table={table}
+          handleChangePageIndex={handleChangePageIndex}
+        />
       </div>
     </>
   );
