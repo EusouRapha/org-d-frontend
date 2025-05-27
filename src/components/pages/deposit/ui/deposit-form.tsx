@@ -32,14 +32,13 @@ const FormSchema = z.object({
     required_error: "Selecione uma conta para depositar",
   }),
   value: z
-    .string({
+    .number({
       required_error: "Informe o valor do depósito",
+      invalid_type_error: "Informe um valor numérico válido",
     })
-    .refine((val) => val !== "0", {
-      message: "O valor não pode ser 0",
-    })
-    .refine((val) => /^[1-9]\d*(,|\.)?\d{0,2}$|^0(,|\.)\d{1,2}$/.test(val), {
-      message: "Informe um valor válido",
+    .positive("O valor deve ser maior que 0")
+    .refine((val) => /^\d+(\.\d{1,2})?$/.test(val.toFixed(2)), {
+      message: "Informe no máximo duas casas decimais",
     }),
 });
 
@@ -48,7 +47,6 @@ export function DepositForm() {
   const clientId = session.data?.user?.id;
 
   const getAccountsQuery = useGetAccountQuery(clientId ?? 0);
-
   const createDepositMutation = useCreateDepositMutation(
     session.data?.access_token
   );
@@ -57,24 +55,20 @@ export function DepositForm() {
     account,
     value,
   }: z.infer<typeof FormSchema>) {
-    // Converte a string para número, substituindo vírgula por ponto
-    const numericValue = parseFloat(value.replace(",", "."));
-    if (numericValue <= 0) {
+    if (value <= 0) {
       console.error("O valor deve ser maior que 0");
       return;
     }
-
     createDepositMutation.mutateAsync({
       accountNumber: account,
-      value: numericValue,
+      value,
     });
   }
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      account: "",
-      value: "0", // Inicia o input com 0
+      value: 0,
     },
   });
 
@@ -86,15 +80,18 @@ export function DepositForm() {
         onSubmit={form.handleSubmit(handleCreateDeposit)}
       >
         <div className="flex gap-8">
+          {/* === FormField da Conta === */}
           <FormField
             control={form.control}
             name="account"
-            render={({ field }) => (
-              <FormItem>
+            render={({ field, fieldState }) => (
+              <FormItem className="flex flex-col">
                 <FormLabel>Conta</FormLabel>
                 <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
+                  value={field.value}
+                  onValueChange={(value) => {
+                    field.onChange(value); // Atualiza o valor no react-hook-form
+                  }}
                 >
                   <FormControl>
                     <SelectTrigger className="!w-lg bg-org-d-pessego !text-lg">
@@ -112,63 +109,59 @@ export function DepositForm() {
                     ))}
                   </SelectContent>
                 </Select>
-                <FormMessage />
+
+                {/* Mensagem de erro exibida apenas no submit */}
+                {fieldState.error && (
+                  <div className="mt-1 text-red-500 text-sm">
+                    {fieldState.error.message}
+                  </div>
+                )}
               </FormItem>
             )}
           />
+
+          {/* === FormField do Valor === */}
           <FormField
             control={form.control}
             name="value"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="flex flex-col">
                 <FormLabel>Valor do depósito</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Digite o valor do depósito"
-                    type="text" // Trabalha com strings
+                    type="number"
+                    step="0.01"
+                    min="0"
                     className="!w-64 bg-org-d-pessego !text-lg"
                     {...field}
                     value={field.value}
                     onChange={(e) => {
-                      let value = e.target.value;
-
-                      // Remove caracteres inválidos
-                      value = value.replace(/[^0-9.,]/g, "");
-
-                      // Não permite começar com ponto ou vírgula
-                      if (value.startsWith(".") || value.startsWith(",")) {
-                        value = "0" + value;
+                      const n = e.target.valueAsNumber;
+                      if (isNaN(n) || n < 0) {
+                        field.onChange(0);
+                      } else {
+                        field.onChange(Math.floor(n * 100) / 100);
                       }
-
-                      // Remove zeros à esquerda, exceto se for "0," ou "0."
-                      if (/^0[0-9]+/.test(value)) {
-                        value = value.replace(/^0+/, "0");
-                      }
-
-                      // Impede "0," ou "0."
-                      if (value === "0," || value === "0.") {
-                        value = "0";
-                      }
-
-                      // Atualiza o valor no formulário
-                      field.onChange(value);
                     }}
                   />
                 </FormControl>
-                <FormMessage />
+                <div className="mt-1">
+                  <FormMessage />
+                </div>
               </FormItem>
             )}
           />
         </div>
-        <div className="flex flex-row justify-start">
-          <div
-            key="deposit-action"
-            role="button"
-            className="w-32 text-org-d-pessego bg-org-d-green rounded-2xl hover:bg-green-950 hover:text-org-d-pessego cursor-pointer items-center transition duration-300 ease-in-out text-center"
-            onClick={form.handleSubmit(handleCreateDeposit)}
+
+        {/* Botão que será empurrado somente se houver erro */}
+        <div className="flex">
+          <button
+            type="submit"
+            className="w-32 text-org-d-pessego bg-org-d-green rounded-2xl hover:bg-green-950 transition duration-300 ease-in-out"
           >
             <H4 className="text-org-d-pessego font-semibold">Depositar</H4>
-          </div>
+          </button>
         </div>
       </form>
     </Form>
