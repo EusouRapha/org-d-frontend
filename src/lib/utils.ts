@@ -9,8 +9,8 @@ export function handleAccountsRedirect() {
   window.location.href = "/contas";
 }
 
-export function handleWithdrawRedirect() {
-  window.location.href = "/saque";
+export function handleTransactionsRedirect() {
+  window.location.href = "/transacoes";
 }
 
 export function handleDepositRedirect() {

@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -20,20 +21,21 @@ import { H4 } from "@/components/ui/typography";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
+import { toast, Toaster } from "sonner";
 import { z } from "zod";
 import {
-  useCreateDepositMutation,
+  useCreateTransactionMutation,
   useGetAccountQuery,
-} from "../hooks/use-deposit-queries";
-import { Toaster } from "sonner";
+} from "../hooks/use-transaction-queries";
+import { TransactionTypeEnum } from "../transaction-constants";
 
 const FormSchema = z.object({
   account: z.string({
-    required_error: "Selecione uma conta para depositar",
+    required_error: "Selecione uma conta",
   }),
   value: z
     .number({
-      required_error: "Informe o valor do depósito",
+      required_error: "Informe o valor da transação",
       invalid_type_error: "Informe um valor numérico válido",
     })
     .positive("O valor deve ser maior que 0")
@@ -42,16 +44,23 @@ const FormSchema = z.object({
     }),
 });
 
-export function DepositForm() {
+type TransactionFormProps = {
+  type: TransactionTypeEnum;
+};
+
+export function TransactionForm({ type }: TransactionFormProps) {
   const session = useSession();
   const clientId = session.data?.user?.id;
 
   const getAccountsQuery = useGetAccountQuery(clientId ?? 0);
-  const createDepositMutation = useCreateDepositMutation(
-    session.data?.access_token
+
+  const createTransactionMutation = useCreateTransactionMutation(
+    session.data?.access_token,
+    clientId ?? 0,
+    type
   );
 
-  async function handleCreateDeposit({
+  async function handleCreateTransaction({
     account,
     value,
   }: z.infer<typeof FormSchema>) {
@@ -59,7 +68,26 @@ export function DepositForm() {
       console.error("O valor deve ser maior que 0");
       return;
     }
-    createDepositMutation.mutateAsync({
+
+    const selectedAccount = getAccountsQuery.data?.find(
+      (acc) => acc.accountNumber === account
+    );
+
+    if (
+      type === TransactionTypeEnum.DEBIT &&
+      selectedAccount &&
+      value > selectedAccount.balance
+    ) {
+      toast.error("Saldo insuficiente para realizar o transação", {
+        style: {
+          background: "red",
+          color: "white",
+        },
+      });
+      return;
+    }
+
+    createTransactionMutation.mutateAsync({
       accountNumber: account,
       value,
     });
@@ -77,25 +105,24 @@ export function DepositForm() {
       <Toaster position="top-right" />
       <form
         className="flex flex-col gap-4"
-        onSubmit={form.handleSubmit(handleCreateDeposit)}
+        onSubmit={form.handleSubmit(handleCreateTransaction)}
       >
-        <div className="flex gap-8">
-          {/* === FormField da Conta === */}
+        <div className="flex flex-col md:flex-row gap-4">
           <FormField
             control={form.control}
             name="account"
-            render={({ field, fieldState }) => (
-              <FormItem className="flex flex-col">
+            render={({ field }) => (
+              <FormItem className="flex flex-col min-w-96">
                 <FormLabel>Conta</FormLabel>
                 <Select
                   value={field.value}
                   onValueChange={(value) => {
-                    field.onChange(value); // Atualiza o valor no react-hook-form
+                    field.onChange(value);
                   }}
                 >
                   <FormControl>
-                    <SelectTrigger className="!w-lg bg-org-d-pessego !text-lg">
-                      <SelectValue placeholder="Selecione uma conta para depositar" />
+                    <SelectTrigger className="w-full bg-org-d-pessego text-lg md:text-base lg:text-lg">
+                      <SelectValue placeholder="Selecione uma conta" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -104,36 +131,33 @@ export function DepositForm() {
                         key={account.accountNumber}
                         value={account.accountNumber}
                       >
-                        {account.accountNumber}
+                        {account.accountNumber} - Saldo Atual: R$
+                        {account.balance.toFixed(2)}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
 
-                {/* Mensagem de erro exibida apenas no submit */}
-                {fieldState.error && (
-                  <div className="mt-1 text-red-500 text-sm">
-                    {fieldState.error.message}
-                  </div>
-                )}
+                <div className="mt-1">
+                  <FormMessage />
+                </div>
               </FormItem>
             )}
           />
 
-          {/* === FormField do Valor === */}
           <FormField
             control={form.control}
             name="value"
             render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>Valor do depósito</FormLabel>
+              <FormItem className="flex flex-col w-auto ">
+                <FormLabel>Valor da transação</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Digite o valor do depósito"
+                    placeholder="Digite o valor da transação"
                     type="number"
                     step="0.01"
                     min="0"
-                    className="!w-64 bg-org-d-pessego !text-lg"
+                    className="w-full bg-org-d-pessego text-lg md:text-base lg:text-lg"
                     {...field}
                     value={field.value}
                     onChange={(e) => {
@@ -153,15 +177,15 @@ export function DepositForm() {
             )}
           />
         </div>
-
-        {/* Botão que será empurrado somente se houver erro */}
-        <div className="flex">
-          <button
+        <div className="flex justify-start">
+          <Button
             type="submit"
-            className="w-32 text-org-d-pessego bg-org-d-green rounded-2xl hover:bg-green-950 transition duration-300 ease-in-out"
+            className="bg-org-d-green hover:bg-green-800 text-org-d-pessego font-semibold rounded-2xl w-32"
           >
-            <H4 className="text-org-d-pessego font-semibold">Depositar</H4>
-          </button>
+            <H4 className="text-org-d-pessego font-semibold">
+              {type === TransactionTypeEnum.DEBIT ? "Saque" : "Depósito"}
+            </H4>
+          </Button>
         </div>
       </form>
     </Form>

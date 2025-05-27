@@ -3,17 +3,10 @@ import { CardButton } from "@/components/ui/card-button";
 import { H1 } from "@/components/ui/typography";
 import {
   handleAccountsRedirect,
-  handleDepositRedirect,
   handleStatementRedirect,
-  handleWithdrawRedirect,
+  handleTransactionsRedirect,
 } from "@/lib/utils";
-import {
-  BanknoteArrowDown,
-  BanknoteArrowUp,
-  LogOut,
-  Receipt,
-  UserPlus,
-} from "lucide-react";
+import { BanknoteArrowDown, LogOut, Receipt, UserPlus } from "lucide-react";
 import { signOut } from "next-auth/react";
 
 export default function HomePage() {
@@ -24,14 +17,9 @@ export default function HomePage() {
       onClick: () => handleAccountsRedirect(),
     },
     {
-      label: "Saque",
+      label: "Transações",
       icon: <BanknoteArrowDown size={48} />,
-      onClick: () => handleWithdrawRedirect(),
-    },
-    {
-      label: "Deposito",
-      icon: <BanknoteArrowUp size={48} />,
-      onClick: () => handleDepositRedirect(),
+      onClick: () => handleTransactionsRedirect(),
     },
     {
       label: "Extrato",

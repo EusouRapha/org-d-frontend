@@ -1,8 +1,13 @@
 "use client";
 
 import {
+  handleAccountsRedirect,
+  handleHomeRedirect,
+  handleStatementRedirect,
+  handleTransactionsRedirect,
+} from "@/lib/utils";
+import {
   BanknoteArrowDown,
-  BanknoteArrowUp,
   CircleDollarSign,
   House,
   LogOut,
@@ -10,14 +15,8 @@ import {
   UserPlus,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
-import { H3 } from "./typography";
-import {
-  handleAccountsRedirect,
-  handleDepositRedirect,
-  handleHomeRedirect,
-  handleStatementRedirect,
-  handleWithdrawRedirect,
-} from "@/lib/utils";
+import IconButton from "./icon-button";
+import { H4 } from "./typography";
 
 type ActionType = {
   label: string;
@@ -33,14 +32,9 @@ export default function Sidebar() {
       onClick: () => handleAccountsRedirect(),
     },
     {
-      label: "Saque",
+      label: "Transações",
       icon: <BanknoteArrowDown size={30} />,
-      onClick: () => handleWithdrawRedirect(),
-    },
-    {
-      label: "Deposito",
-      icon: <BanknoteArrowUp size={30} />,
-      onClick: () => handleDepositRedirect(),
+      onClick: () => handleTransactionsRedirect(),
     },
     {
       label: "Extrato",
@@ -57,7 +51,7 @@ export default function Sidebar() {
   return (
     <div
       suppressHydrationWarning
-      className="flex flex-col h-screen bg-org-d-green w-52"
+      className="flex flex-col h-screen bg-org-d-green w-auto"
     >
       <div className="flex items-center justify-center pt-8">
         <CircleDollarSign
@@ -68,28 +62,24 @@ export default function Sidebar() {
       </div>
       <nav className="flex flex-col p-4 flex-grow gap-2">
         {actions.map((action) => (
-          <div
+          <IconButton
             key={action.label}
-            role="button"
-            className="flex flex-row text-org-d-pessego rounded-2xl hover:bg-green-950 hover:text-org-d-pessego px-4 py-2 cursor-pointer items-center transition duration-300 ease-in-out"
+            icon={action.icon}
+            label={
+              <H4 className="text-org-d-pessego font-semibold">
+                {action.label}
+              </H4>
+            }
             onClick={action.onClick}
-          >
-            {action.icon}
-            <H3 className="text-org-d-pessego font-semibold pl-2">
-              {action.label}
-            </H3>
-          </div>
+          />
         ))}
       </nav>
       <nav className="flex flex-col pb-20 pl-4 p-4">
-        <div
-          role="button"
-          className="flex flex-row text-org-d-pessego rounded-2xl hover:bg-green-950 hover:text-org-d-pessego px-4 py-2 cursor-pointer items-center transition duration-300 ease-in-out"
+        <IconButton
+          icon={<LogOut size={30} />}
+          label={<H4 className="text-org-d-pessego font-semibold">Sair</H4>}
           onClick={() => signOut()}
-        >
-          <LogOut size={30} />
-          <H3 className="text-org-d-pessego font-semibold pl-2">Sair</H3>
-        </div>
+        />
       </nav>
     </div>
   );

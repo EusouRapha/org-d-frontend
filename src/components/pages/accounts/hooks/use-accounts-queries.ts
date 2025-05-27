@@ -9,7 +9,7 @@ type Account = {
 
 export function useGetAccountQuery(clientId: number) {
   const getAccountsQuery = useQuery<Account[]>({
-    queryKey: [`accounts/${clientId}`],
+    queryKey: [`accounts/clients/${clientId}`],
   });
 
   return getAccountsQuery;
@@ -21,7 +21,7 @@ export function useCreateAccountMutation(access_token: string | undefined) {
     mutationFn: (clientId: number) => {
       const token = access_token ?? "";
       return api.post(
-        "http://localhost:4000/accounts",
+        "/accounts",
         { client_id: clientId },
         {
           headers: {
@@ -32,7 +32,7 @@ export function useCreateAccountMutation(access_token: string | undefined) {
     },
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
-        queryKey: [`accounts/${variables}`],
+        queryKey: [`accounts/clients/${variables}`],
       });
 
       const successMessage = "Conta criada com sucesso!";

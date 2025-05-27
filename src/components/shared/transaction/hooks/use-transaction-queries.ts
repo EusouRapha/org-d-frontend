@@ -1,21 +1,27 @@
 import api from "@/app/api/auth/[...nextauth]/axios";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { TransactionTypeEnum } from "../transaction-constants";
 
 type Account = {
   accountNumber: string;
+  balance: number;
 };
 
 export function useGetAccountQuery(clientId: number) {
   const getAccountsQuery = useQuery<Account[]>({
-    queryKey: [`accounts/${clientId}`],
+    queryKey: [`accounts/clients/${clientId}`],
   });
 
   return getAccountsQuery;
 }
 
-export function useCreateDepositMutation(access_token: string | undefined) {
-  // const queryClient = useQueryClient();
+export function useCreateTransactionMutation(
+  access_token: string | undefined,
+  clientId: number,
+  type: TransactionTypeEnum
+) {
+  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: (data: { accountNumber: string; value: number }) => {
       const token = access_token ?? "";
@@ -24,7 +30,7 @@ export function useCreateDepositMutation(access_token: string | undefined) {
         {
           account_number: data.accountNumber,
           value: data.value,
-          type: "CREDIT",
+          type: type,
         },
         {
           headers: {
@@ -34,7 +40,11 @@ export function useCreateDepositMutation(access_token: string | undefined) {
       );
     },
     onSuccess: () => {
-      const successMessage = "Depósito realizado com sucesso!";
+      console.log(clientId, "clientId");
+      queryClient.invalidateQueries({
+        queryKey: [`accounts/clients/${clientId}`],
+      });
+      const successMessage = "Transaçâo realizada com sucesso!";
       toast.success(successMessage, {
         style: {
           background: "green",
@@ -43,7 +53,7 @@ export function useCreateDepositMutation(access_token: string | undefined) {
       });
     },
     onError: () => {
-      const errorMessage = "Ocorreu um erro ao realizar o depósito";
+      const errorMessage = "Ocorreu um erro ao realizar a transação";
       toast.error(errorMessage, {
         style: {
           background: "red",

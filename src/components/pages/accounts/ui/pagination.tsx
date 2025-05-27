@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { Table } from "@tanstack/react-table";
 
 type PaginationProps<TData> = {
@@ -25,32 +26,34 @@ export default function Pagination<TData>({
         </div>
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
-        <button
+        <Button
+          type="button"
+          onClick={() =>
+            handleChangePageIndex(table.getState().pagination.pageIndex - 1)
+          }
           className={`${
             !table.getCanPreviousPage()
-              ? "bg-gray-400 cursor-not-allowed"
+              ? "bg-gray-600 cursor-not-allowed"
               : "bg-org-d-green hover:bg-green-800"
           } text-white rounded-xl py-1 text-center shadow-lg transition-all w-20`}
-          onClick={() => {
-            handleChangePageIndex(table.getState().pagination.pageIndex - 1);
-          }}
           disabled={!table.getCanPreviousPage()}
         >
-          <div className="font-bold leading-tight">Anterior</div>
-        </button>
-        <button
+          <div className="font-bold text-md leading-tight">Anterior</div>
+        </Button>
+        <Button
+          type="button"
+          onClick={() =>
+            handleChangePageIndex(table.getState().pagination.pageIndex + 1)
+          }
           className={`${
             !table.getCanNextPage()
-              ? "bg-gray-400 cursor-not-allowed"
+              ? "bg-gray-600 cursor-not-allowed"
               : "bg-org-d-green hover:bg-green-800"
           } text-white rounded-xl py-1 text-center shadow-lg transition-all w-20`}
-          onClick={() => {
-            handleChangePageIndex(table.getState().pagination.pageIndex + 1);
-          }}
           disabled={!table.getCanNextPage()}
         >
-          <div className="font-bold leading-tight">Proxima</div>
-        </button>
+          <div className="font-bold text-md leading-tight">Próxima</div>
+        </Button>
       </div>
     </>
   );
