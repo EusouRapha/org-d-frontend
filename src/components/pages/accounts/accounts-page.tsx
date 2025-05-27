@@ -5,7 +5,7 @@ import { UserPlus } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useCreateAccountMutation } from "./hooks/use-accounts-queries";
 import { columns } from "./ui/columns";
-import { DataTable } from "./ui/data-table";
+import { AccountsTable } from "./ui/accounts-table";
 import { Toaster } from "sonner";
 import { H1 } from "@/components/ui/typography";
 import React from "react";
@@ -23,7 +23,7 @@ export default function AccountsPage() {
   }
 
   return (
-    <>
+    <div suppressHydrationWarning>
       <Toaster position="top-right" />
       <H1 className="text-org-d-green font-bold text-center pr-16 pt-8">
         Contas
@@ -43,10 +43,10 @@ export default function AccountsPage() {
             </CardButton>
           </div>
           <div className="flex flex-col justify-center align-center">
-            <DataTable columns={columns} clientId={clientId ?? 0} />
+            <AccountsTable columns={columns} clientId={clientId ?? 0} />
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }

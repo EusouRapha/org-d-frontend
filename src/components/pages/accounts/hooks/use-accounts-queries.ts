@@ -3,13 +3,14 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 type Account = {
-  accountNumber: string;
+  account_number: string;
   balance: number;
 };
 
-export function useGetAccountQuery(clientId: number) {
+export function useGetAccountsQuery(clientId: number | undefined) {
   const getAccountsQuery = useQuery<Account[]>({
-    queryKey: [`accounts/clients/${clientId}`],
+    queryKey: [`accounts/clients/${clientId}`, { details: false }],
+    enabled: !!clientId,
   });
 
   return getAccountsQuery;

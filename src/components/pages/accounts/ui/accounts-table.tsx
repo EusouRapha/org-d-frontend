@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/table";
 import React from "react";
 import Pagination from "./pagination";
-import { useGetAccountQuery } from "../hooks/use-accounts-queries";
+import { useGetAccountsQuery } from "../hooks/use-accounts-queries";
 import { Account } from "./columns";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -30,7 +30,7 @@ interface DataTableProps<TValue> {
   clientId: number;
 }
 
-export function DataTable<TValue>({
+export function AccountsTable<TValue>({
   columns,
   clientId,
 }: DataTableProps<TValue>) {
@@ -50,7 +50,7 @@ export function DataTable<TValue>({
     }));
   };
 
-  const getAccountsQuery = useGetAccountQuery(clientId ?? 0);
+  const getAccountsQuery = useGetAccountsQuery(clientId);
 
   const table = useReactTable({
     data: getAccountsQuery.data ?? [],
@@ -74,10 +74,13 @@ export function DataTable<TValue>({
         <Input
           placeholder="Busque por numeros da conta"
           value={
-            (table.getColumn("accountNumber")?.getFilterValue() as string) ?? ""
+            (table.getColumn("account_number")?.getFilterValue() as string) ??
+            ""
           }
           onChange={(event) =>
-            table.getColumn("accountNumber")?.setFilterValue(event.target.value)
+            table
+              .getColumn("account_number")
+              ?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
@@ -122,7 +125,7 @@ export function DataTable<TValue>({
                 colSpan={columns.length}
                 className="flex justify-center items-center text-center"
               >
-                {getAccountsQuery.isLoading ? (
+                {getAccountsQuery.isPending ? (
                   <Skeleton className="w-[400px] h-[20px]  bg-green-800" />
                 ) : (
                   <span className="text-sm text-gray-500">

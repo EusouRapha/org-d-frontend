@@ -4,13 +4,14 @@ import { toast } from "sonner";
 import { TransactionTypeEnum } from "../transaction-constants";
 
 type Account = {
-  accountNumber: string;
+  account_number: string;
   balance: number;
 };
 
-export function useGetAccountQuery(clientId: number) {
+export function useGetAccountsQuery(clientId: number | undefined) {
   const getAccountsQuery = useQuery<Account[]>({
-    queryKey: [`accounts/clients/${clientId}`],
+    queryKey: [`accounts/clients/${clientId}`, { details: false }],
+    enabled: !!clientId,
   });
 
   return getAccountsQuery;
@@ -40,9 +41,8 @@ export function useCreateTransactionMutation(
       );
     },
     onSuccess: () => {
-      console.log(clientId, "clientId");
       queryClient.invalidateQueries({
-        queryKey: [`accounts/clients/${clientId}`],
+        queryKey: [`accounts/clients/${clientId}`, { details: false }],
       });
       const successMessage = "Transaçâo realizada com sucesso!";
       toast.success(successMessage, {

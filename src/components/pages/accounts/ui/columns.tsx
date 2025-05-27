@@ -5,17 +5,17 @@ import { ColumnDef } from "@tanstack/react-table";
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export type Account = {
-  accountNumber: string;
+  account_number: string;
   balance: number;
 };
 
 export const columns: ColumnDef<Account>[] = [
   {
-    accessorKey: "accountNumber",
+    accessorKey: "account_number",
     header: "Numero da conta",
 
     cell: ({ row }) => {
-      const accountNumber = row.getValue<string>("accountNumber");
+      const accountNumber = row.getValue<string>("account_number");
 
       return <div className="font-medium">{accountNumber}</div>;
     },

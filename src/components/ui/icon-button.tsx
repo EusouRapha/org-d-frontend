@@ -10,6 +10,7 @@ type IconButtonProps = {
 export default function IconButton({ icon, label, onClick }: IconButtonProps) {
   return (
     <div
+      suppressHydrationWarning
       role="button"
       className={clsx(
         "flex items-center hover:bg-green-950 cursor-pointer transition duration-300 ease-in-out",

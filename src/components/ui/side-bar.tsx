@@ -27,6 +27,11 @@ type ActionType = {
 export default function Sidebar() {
   const actions: ActionType[] = [
     {
+      label: "Home",
+      icon: <House size={30} />,
+      onClick: () => handleHomeRedirect(),
+    },
+    {
       label: "Contas",
       icon: <UserPlus size={30} />,
       onClick: () => handleAccountsRedirect(),
@@ -40,11 +45,6 @@ export default function Sidebar() {
       label: "Extrato",
       icon: <Receipt size={30} />,
       onClick: () => handleStatementRedirect(),
-    },
-    {
-      label: "Home",
-      icon: <House size={30} />,
-      onClick: () => handleHomeRedirect(),
     },
   ];
 
@@ -60,7 +60,10 @@ export default function Sidebar() {
           className="stroke-org-d-pessego"
         />
       </div>
-      <nav className="flex flex-col p-4 flex-grow gap-2">
+      <nav
+        suppressHydrationWarning
+        className="flex flex-col p-4 flex-grow gap-2"
+      >
         {actions.map((action) => (
           <IconButton
             key={action.label}
@@ -76,7 +79,7 @@ export default function Sidebar() {
       </nav>
       <nav className="flex flex-col pb-20 pl-4 p-4">
         <IconButton
-          icon={<LogOut size={30} />}
+          icon={<LogOut suppressHydrationWarning size={30} />}
           label={<H4 className="text-org-d-pessego font-semibold">Sair</H4>}
           onClick={() => signOut()}
         />

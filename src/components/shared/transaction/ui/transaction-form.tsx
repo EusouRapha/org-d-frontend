@@ -25,7 +25,7 @@ import { toast, Toaster } from "sonner";
 import { z } from "zod";
 import {
   useCreateTransactionMutation,
-  useGetAccountQuery,
+  useGetAccountsQuery,
 } from "../hooks/use-transaction-queries";
 import { TransactionTypeEnum } from "../transaction-constants";
 
@@ -52,7 +52,7 @@ export function TransactionForm({ type }: TransactionFormProps) {
   const session = useSession();
   const clientId = session.data?.user?.id;
 
-  const getAccountsQuery = useGetAccountQuery(clientId ?? 0);
+  const getAccountsQuery = useGetAccountsQuery(clientId ?? 0);
 
   const createTransactionMutation = useCreateTransactionMutation(
     session.data?.access_token,
@@ -65,12 +65,11 @@ export function TransactionForm({ type }: TransactionFormProps) {
     value,
   }: z.infer<typeof FormSchema>) {
     if (value <= 0) {
-      console.error("O valor deve ser maior que 0");
       return;
     }
 
     const selectedAccount = getAccountsQuery.data?.find(
-      (acc) => acc.accountNumber === account
+      (acc) => acc.account_number === account
     );
 
     if (
@@ -128,10 +127,10 @@ export function TransactionForm({ type }: TransactionFormProps) {
                   <SelectContent>
                     {getAccountsQuery.data?.map((account) => (
                       <SelectItem
-                        key={account.accountNumber}
-                        value={account.accountNumber}
+                        key={account.account_number}
+                        value={account.account_number}
                       >
-                        {account.accountNumber} - Saldo Atual: R$
+                        {account.account_number} - Saldo Atual: R$
                         {account.balance.toFixed(2)}
                       </SelectItem>
                     ))}
@@ -155,7 +154,7 @@ export function TransactionForm({ type }: TransactionFormProps) {
                   <Input
                     placeholder="Digite o valor da transação"
                     type="number"
-                    step="0.01"
+                    step="1"
                     min="0"
                     className="w-full bg-org-d-pessego text-lg md:text-base lg:text-lg"
                     {...field}
