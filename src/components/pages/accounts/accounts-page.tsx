@@ -29,7 +29,7 @@ export default function AccountsPage() {
         Contas
       </H1>
       <div className="flex flex-col justify-center items-center h-screen mx-auto">
-        <div className="flex flex-col w-2/3 h-3/4 gap-16">
+        <div className="flex flex-col w-2/3 h-3/4 gap-4">
           <div>
             <CardButton
               key={"Criar conta"}
