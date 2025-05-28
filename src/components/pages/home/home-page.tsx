@@ -40,13 +40,13 @@ export default function HomePage() {
           Seja bem vindo(a) ao ORG-D
         </H1>
       </div>
-      <div className="flex flex-row justify-center items-center gap-8 max-[1650px]:flex-col h-full pb-36">
+      <div className="flex flex-row justify-center items-center gap-8 max-[1650px]:flex-col h-full pb-36 ">
         {cardButtons.map((button) => (
           <CardButton
             key={button.label}
             icon={button.icon}
             onClick={button.onClick}
-            className="max-[1650px]:w-56 max-[1650px]:h-32"
+            className="max-[1650px]:w-56 max-[1650px]:h-32 max-[1200px]:w-48 max-[1200px]:h-28 max-[768px]:w-40 max-[768px]:h-24 flex justify-center items-center"
           >
             {button.label}
           </CardButton>

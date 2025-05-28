@@ -50,18 +50,18 @@ export default function RegisterForm() {
       return value.slice(0, 14);
     }
     return value
-      .replace(/\D/g, "") // Remove caracteres não numéricos
-      .replace(/(\d{3})(\d)/, "$1.$2") // Adiciona o primeiro ponto
-      .replace(/(\d{3})(\d)/, "$1.$2") // Adiciona o segundo ponto
-      .replace(/(\d{3})(\d{1,2})$/, "$1-$2"); // Adiciona o traço
+      .replace(/\D/g, "")
+      .replace(/(\d{3})(\d)/, "$1.$2")
+      .replace(/(\d{3})(\d)/, "$1.$2")
+      .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
   }
 
   function formatPhoneNumber(value: string) {
     return value
       .replace(/\D/g, "") // Remove caracteres não numéricos
-      .replace(/(\d{2})(\d)/, "($1) $2") // Adiciona parênteses no DDD
-      .replace(/(\d{5})(\d)/, "$1-$2") // Adiciona o traço após os 5 primeiros dígitos
-      .slice(0, 15); // Limita o tamanho máximo
+      .replace(/(\d{2})(\d)/, "($1) $2")
+      .replace(/(\d{5})(\d)/, "$1-$2")
+      .slice(0, 15);
   }
 
   const mutation = useMutation({
@@ -154,7 +154,9 @@ export default function RegisterForm() {
                         }}
                       />
                     </FormControl>
-                    <FormMessage />
+                    <div className="mt-2">
+                      <FormMessage />
+                    </div>
                   </FormItem>
                 )}
               />
@@ -174,7 +176,9 @@ export default function RegisterForm() {
                         {...field}
                       />
                     </FormControl>
-                    <FormMessage />
+                    <div className="mt-2">
+                      <FormMessage />
+                    </div>
                   </FormItem>
                 )}
               />
@@ -197,7 +201,9 @@ export default function RegisterForm() {
                         }}
                       />
                     </FormControl>
-                    <FormMessage />
+                    <div className="mt-2">
+                      <FormMessage />
+                    </div>
                   </FormItem>
                 )}
               />
@@ -205,7 +211,7 @@ export default function RegisterForm() {
             <div className="flex flex-row gap-6 items-start pt-4">
               <Button
                 type="submit"
-                className="bg-org-d-pessego text-2xl text-org-d-green hover:bg-green-950 hover:text-org-d-pessego transition duration-300 ease-in-out"
+                className="bg-org-d-pessego text-2xl text-org-d-green hover:bg-green-950 cursor-pointer hover:text-org-d-pessego transition duration-300 ease-in-out"
                 onClick={() => form.handleSubmit(onSubmit)}
               >
                 Registrar
@@ -213,7 +219,7 @@ export default function RegisterForm() {
               <Button
                 type="button"
                 onClick={() => router.push("/login")}
-                className="bg-org-d-pessego text-2xl text-org-d-green hover:bg-green-950 hover:text-org-d-pessego transition duration-300 ease-in-out"
+                className="bg-org-d-pessego text-2xl  text-org-d-green hover:bg-green-950 cursor-pointer hover:text-org-d-pessego transition duration-300 ease-in-out"
               >
                 Cancelar
               </Button>

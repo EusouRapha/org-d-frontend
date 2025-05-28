@@ -111,7 +111,7 @@ export function TransactionForm({ type }: TransactionFormProps) {
             control={form.control}
             name="account"
             render={({ field }) => (
-              <FormItem className="flex flex-col min-w-96">
+              <FormItem className="flex flex-col w-96 max-[768px]:text-sm max-[768px]:w-70">
                 <FormLabel>Conta</FormLabel>
                 <Select
                   value={field.value}
@@ -120,7 +120,7 @@ export function TransactionForm({ type }: TransactionFormProps) {
                   }}
                 >
                   <FormControl>
-                    <SelectTrigger className="w-full bg-org-d-pessego text-lg md:text-base lg:text-lg">
+                    <SelectTrigger className="w-full bg-org-d-pessego text-lg md:text-base lg:text-lg max-[768px]:text-sm max-[768px]:h-10 max-[375px]:text-xs max-[375px]:h-8">
                       <SelectValue placeholder="Selecione uma conta" />
                     </SelectTrigger>
                   </FormControl>
@@ -148,7 +148,7 @@ export function TransactionForm({ type }: TransactionFormProps) {
             control={form.control}
             name="value"
             render={({ field }) => (
-              <FormItem className="flex flex-col w-auto ">
+              <FormItem className="flex flex-col w-auto">
                 <FormLabel>Valor da transação</FormLabel>
                 <FormControl>
                   <Input
@@ -156,7 +156,7 @@ export function TransactionForm({ type }: TransactionFormProps) {
                     type="number"
                     step="1"
                     min="0"
-                    className="w-full bg-org-d-pessego text-lg md:text-base lg:text-lg"
+                    className="w-full bg-org-d-pessego text-lg md:text-base lg:text-lg max-[768px]:text-sm max-[768px]:h-10 max-[375px]:text-xs max-[375px]:h-8"
                     {...field}
                     value={field.value}
                     onChange={(e) => {

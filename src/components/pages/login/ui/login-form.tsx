@@ -70,18 +70,18 @@ export default function LoginForm() {
       label: "Logar",
       onClick: form.handleSubmit(onSubmit),
       className:
-        "bg-org-d-pessego text-2xl text-org-d-green hover:bg-green-950 hover:text-org-d-pessego transition duration-300 ease-in-out cursor-pointer",
+        "bg-org-d-pessego cursor-pointer text-2xl text-org-d-green hover:bg-green-950 hover:text-org-d-pessego transition duration-300 ease-in-outmax-[768px]:text-lg max-[768px]:px-4 max-[768px]:py-2 max-[375px]:text-base max-[375px]:px-3 max-[375px]:py-1.5",
     },
     {
       label: "Cadastrar",
       onClick: () => router.push("/registrar"),
       className:
-        "bg-org-d-pessego text-2xl text-org-d-green hover:bg-green-950 hover:text-org-d-pessego transition duration-300 ease-in-out cursor-pointer",
+        "bg-org-d-pessego text-2xl text-org-d-green hover:bg-green-950 hover:text-org-d-pessego transition duration-300 ease-in-out cursor-pointer max-[768px]:text-lg max-[768px]:px-4 max-[768px]:py-2 max-[375px]:text-base max-[375px]:px-3 max-[375px]:py-1.5",
     },
   ];
 
   return (
-    <div className="flex flex-col items-center w-full h-full ">
+    <div className="flex flex-col items-center w-full h-full px-4 max-[768px]:px-2 max-[375px]:px-1">
       <Toaster position="top-right" />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -90,14 +90,14 @@ export default function LoginForm() {
             name="cpf"
             render={({ field }) => (
               <FormItem className="pb-2">
-                <FormLabel className="text-org-d-pessego cursor-not-allowed text-2xl">
+                <FormLabel className="text-org-d-pessego cursor-not-allowed text-2xl max-[768px]:text-lg max-[375px]:text-base">
                   CPF
                 </FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Digite aqui seu cpf"
                     type="cpf"
-                    className="w-lg h-12 !text-lg bg-org-d-pessego"
+                    className="w-full h-12 !text-lg bg-org-d-pessego max-[768px]:h-10 max-[768px]:text-base max-[375px]:h-8 max-[375px]:text-sm"
                     {...field}
                     onChange={(e) => {
                       field.onChange(formatCPF(e.target.value));
@@ -113,14 +113,14 @@ export default function LoginForm() {
             name="password"
             render={({ field }) => (
               <FormItem className="pb-2">
-                <FormLabel className="text-org-d-pessego text-2xl">
+                <FormLabel className="text-org-d-pessego text-2xl max-[768px]:text-lg max-[375px]:text-base">
                   Senha
                 </FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Digite aqui sua senha"
                     type="password"
-                    className="w-lg h-12 bg-org-d-pessego  !text-lg"
+                    className="w-full h-12 !text-lg bg-org-d-pessego max-[768px]:h-10 max-[768px]:text-base max-[375px]:h-8 max-[375px]:text-sm"
                     {...field}
                   />
                 </FormControl>
@@ -128,7 +128,7 @@ export default function LoginForm() {
               </FormItem>
             )}
           />
-          <div className="flex flex-row gap-6 items-start pt-4">
+          <div className="flex flex-row gap-6 items-start pt-4 max-[768px]:flex-col max-[768px]:gap-4 max-[375px]:gap-2">
             {buttons.map((button, index) => (
               <Button
                 key={index}

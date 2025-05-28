@@ -16,7 +16,6 @@ import {
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 import IconButton from "./icon-button";
-import { H4 } from "./typography";
 
 type ActionType = {
   label: string;
@@ -28,22 +27,42 @@ export default function Sidebar() {
   const actions: ActionType[] = [
     {
       label: "Home",
-      icon: <House size={30} />,
+      icon: (
+        <House
+          size={30}
+          className="max-[768px]:w-6 max-[768px]:h-6 max-[768px]:ml-1"
+        />
+      ),
       onClick: () => handleHomeRedirect(),
     },
     {
       label: "Contas",
-      icon: <UserPlus size={30} />,
+      icon: (
+        <UserPlus
+          size={30}
+          className="max-[768px]:w-6 max-[768px]:h-6 max-[768px]:ml-1"
+        />
+      ),
       onClick: () => handleAccountsRedirect(),
     },
     {
       label: "Transações",
-      icon: <BanknoteArrowDown size={30} />,
+      icon: (
+        <BanknoteArrowDown
+          size={30}
+          className="max-[768px]:w-6 max-[768px]:h-6 max-[768px]:ml-1"
+        />
+      ),
       onClick: () => handleTransactionsRedirect(),
     },
     {
       label: "Extrato",
-      icon: <Receipt size={30} />,
+      icon: (
+        <Receipt
+          size={30}
+          className="max-[768px]:w-6 max-[768px]:h-6 max-[768px]:ml-1"
+        />
+      ),
       onClick: () => handleStatementRedirect(),
     },
   ];
@@ -51,36 +70,46 @@ export default function Sidebar() {
   return (
     <div
       suppressHydrationWarning
-      className="flex flex-col h-screen bg-org-d-green w-auto"
+      className="flex flex-col h-screen bg-org-d-green w-auto max-[768px]:w-20 max-[375px]:w-16"
     >
-      <div className="flex items-center justify-center pt-8">
+      <div className="flex items-center justify-center pt-8 max-[768px]:pt-4">
         <CircleDollarSign
           size={150}
           strokeWidth={1}
-          className="stroke-org-d-pessego"
+          className="stroke-org-d-pessego max-[768px]:w-12  max-[768px]:h-12 max-[375px]:w-10 max-[375px]:h-10"
         />
       </div>
       <nav
         suppressHydrationWarning
-        className="flex flex-col p-4 flex-grow gap-2"
+        className="flex flex-col p-4 flex-grow gap-2 max-[768px]:p-2 max-[375px]:p-1"
       >
         {actions.map((action) => (
           <IconButton
             key={action.label}
             icon={action.icon}
             label={
-              <H4 className="text-org-d-pessego font-semibold">
+              <span className="text-org-d-pessego font-semibold text-xl max-[768px]:hidden ">
                 {action.label}
-              </H4>
+              </span>
             }
             onClick={action.onClick}
           />
         ))}
       </nav>
-      <nav className="flex flex-col pb-20 pl-4 p-4">
+      <nav className="flex flex-col pb-20 pl-4 p-4 max-[768px]:pb-10 max-[768px]:pl-2 max-[375px]:pb-8 max-[375px]:pl-1">
         <IconButton
-          icon={<LogOut suppressHydrationWarning size={30} />}
-          label={<H4 className="text-org-d-pessego font-semibold">Sair</H4>}
+          icon={
+            <LogOut
+              suppressHydrationWarning
+              size={30}
+              className="max-[768px]:w-6 max-[768px]:h-6 max-[375px]:w-5 max-[375px]:h-5 max-[768px]:ml-1"
+            />
+          }
+          label={
+            <span className="text-org-d-pessego font-semibold text-xl max-[768px]:hidden">
+              Sair
+            </span>
+          }
           onClick={() => signOut()}
         />
       </nav>

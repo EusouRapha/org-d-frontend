@@ -18,12 +18,15 @@ export default function AppWrapper({
     <SessionProvider session={session}>
       <ReactQueryWrapper>
         {!isLoginPage && !isRegisterPage ? (
-          <div className="flex flex-row h-screen overflow-hidden">
+          <div
+            suppressHydrationWarning
+            className="flex flex-row h-screen overflow-hidden"
+          >
             <Sidebar />
             <main className="flex-grow bg-org-d-pessego">{children}</main>
           </div>
         ) : (
-          <main>{children}</main>
+          <main suppressHydrationWarning>{children}</main>
         )}
       </ReactQueryWrapper>
     </SessionProvider>

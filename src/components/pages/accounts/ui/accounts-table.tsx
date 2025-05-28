@@ -70,7 +70,7 @@ export function AccountsTable<TValue>({
 
   return (
     <>
-      <div className="flex items-center py-4">
+      <div className="flex items-center py-4 max-[768px]:flex-col max-[768px]:gap-2 ">
         <Input
           placeholder="Busque por numeros da conta"
           value={
@@ -82,62 +82,70 @@ export function AccountsTable<TValue>({
               .getColumn("account_number")
               ?.setFilterValue(event.target.value)
           }
-          className="max-w-sm"
+          className="max-w-sm max-[768px]:w-full"
         />
       </div>
-      <Table className="rounded-md border">
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
-                return (
-                  <TableHead key={header.id} className="text-center">
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableHead>
-                );
-              })}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-                className="text-center"
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
+      <div className="overflow-x-auto">
+        <Table className="rounded-md border min-w-auto">
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead
+                      key={header.id}
+                      className="text-center text-sm max-[768px]:text-xs"
+                    >
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                    </TableHead>
+                  );
+                })}
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell
-                colSpan={columns.length}
-                className="flex justify-center items-center text-center"
-              >
-                {getAccountsQuery.isPending ? (
-                  <Skeleton className="w-[400px] h-[20px]  bg-green-800" />
-                ) : (
-                  <span className="text-sm text-gray-500">
-                    Nenhum resultado encontrado
-                  </span>
-                )}
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-      <div className="flex items-center justify-between space-x-2">
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                  className="text-center text-sm max-[768px]:text-xs"
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="flex justify-center items-center text-center"
+                >
+                  {getAccountsQuery.isPending ? (
+                    <Skeleton className="w-[200px] h-[20px] bg-green-800 max-[768px]:w-[200px] max-[375px]:w-[200px]" />
+                  ) : (
+                    <span className="text-sm text-gray-500 max-[768px]:text-xs">
+                      Nenhum resultado encontrado
+                    </span>
+                  )}
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+      <div className="flex items-center justify-between space-x-2 max-[768px]:flex-col max-[768px]:space-x-0 max-[768px]:gap-2">
         <Pagination
           table={table}
           handleChangePageIndex={handleChangePageIndex}

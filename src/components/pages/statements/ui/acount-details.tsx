@@ -24,7 +24,7 @@ export default function AccountDetails({
             <p className="py-1">Saldo: R$ {account.balance.toFixed(2)}</p>
           </div>
           <div>
-            <H4>Lançamentos: </H4>
+            <H4 className="max-[768px]:text-base">Lançamentos:</H4>
             {account.launches?.length !== 0 ? (
               account.launches?.map((launch) => (
                 <div key={launch.id}>

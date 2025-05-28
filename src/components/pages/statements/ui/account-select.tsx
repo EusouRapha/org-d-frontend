@@ -22,7 +22,7 @@ export default function AccountSelect({
         handleSelectAccount(value);
       }}
     >
-      <SelectTrigger className="w-[180px]">
+      <SelectTrigger className="w-[180px] max-[768px]:w-34">
         <SelectValue defaultValue="all" />
       </SelectTrigger>
       <SelectContent>
