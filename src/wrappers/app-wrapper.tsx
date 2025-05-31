@@ -11,9 +11,9 @@ export default function AppWrapper({
   children: React.ReactNode;
   session: never;
 }) {
-  const pathname = usePathname(); // Obtém a rota atual
-  const isLoginPage = pathname === "/login"; // Verifica se é a página de login
-  const isRegisterPage = pathname === "/registrar"; // Verifica se é a página de registro
+  const pathname = usePathname(); 
+  const isLoginPage = pathname === "/login"; 
+  const isRegisterPage = pathname === "/registrar"; 
   return (
     <SessionProvider session={session}>
       <ReactQueryWrapper>
