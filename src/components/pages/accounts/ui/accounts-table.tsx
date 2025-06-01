@@ -77,11 +77,16 @@ export function AccountsTable<TValue>({
             (table.getColumn("account_number")?.getFilterValue() as string) ??
             ""
           }
-          onChange={(event) =>
+          onChange={(event) => {
             table
               .getColumn("account_number")
-              ?.setFilterValue(event.target.value)
-          }
+              ?.setFilterValue(event.target.value);
+
+            setPagination((prev) => ({
+              ...prev,
+              pageIndex: 0,
+            }));
+          }}
           className="max-w-sm max-[768px]:w-full"
         />
       </div>
