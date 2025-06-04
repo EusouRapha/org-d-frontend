@@ -1,0 +1,5 @@
+@import "tailwindcss";
+
+@theme {
+  --color-org-d-green: #00801C;
+}
