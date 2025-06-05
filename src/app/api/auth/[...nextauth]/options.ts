@@ -1,6 +1,7 @@
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import api from "./axios";
+import { signOut } from "next-auth/react";
 
 export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET as string,
@@ -49,6 +50,10 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token, user }) {
+      if(!token) {	
+        signOut({ redirect: true, callbackUrl: "/login" });
+        return {};
+      }
       if (user) {
         token.id = user.id as string;
         token.name = user.name as string;
@@ -60,6 +65,9 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     async session({ session, token }) {
+      if (!token) {
+        throw new Error("Invalid token");
+      }
       session.user.id = token.id as number;
       session.user.name = token.name as string;
       session.user.cpf = token.cpf as string;
