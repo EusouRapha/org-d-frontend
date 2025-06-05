@@ -87,6 +87,10 @@ cd org-d-frontend
 pnpm install
 ```
 
+3. **Crie um arquivo .env baseado no .env.example que está na raiz do projeto**
+
+4. **O arquivo com a URL base de comunicação com o backend é o arquivo axios.ts. Lá você pode modificar a URL sugerida para comunicação com o backend, mas lembre-se, você precisará mudar a rota do seu backend antes e te-lo rodando.**
+
 ### 🧪 Uso
 
 Inicie o servidor de desenvolvimento:
@@ -104,9 +108,6 @@ Abra o navegador em `http://localhost:3000` para visualizar a aplicação.
 | Comando      | Descrição                            |
 | ------------ | ------------------------------------ |
 | `pnpm dev`   | Inicia o servidor de desenvolvimento |
-| `pnpm build` | Gera a aplicação para produção       |
-| `pnpm start` | Executa o build em ambiente real     |
-| `pnpm lint`  | Executa o linter (ESLint)            |
 
 ---
 
