@@ -43,7 +43,7 @@
 
 A interface web do projeto **ORG-D**, desenvolvida com Next.js e Tailwind CSS, visa oferecer uma experiência rápida, acessível e escalável para usuários que desejam acompanhar sua saúde financeira de forma prática.
 
-Este frontend se comunica com a API do projeto [ORG-D Backend](https://github.com/EusouRapha/Org-D) e é parte fundamental do ecossistema da aplicação.
+Este frontend se comunica com a API do projeto [ORG-D Backend](https://github.com/EusouRapha/org-d-backend) e é parte fundamental do ecossistema da aplicação.
 
 ---
 
