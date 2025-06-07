@@ -24,13 +24,9 @@ import { useForm } from "react-hook-form";
 import { toast, Toaster } from "sonner";
 import { z } from "zod";
 import {
-  useCreateTransactionMutation,
   useGetAccountsQuery,
-} from "../hooks/use-transaction-queries";
-import {
-  TransactionOperationEnum,
-  TransactionTypeEnum,
-} from "../transaction-constants";
+  useUpdateAccountMutation,
+} from "../hooks/use-accounts-queries";
 
 const FormSchema = z.object({
   account: z.string({
@@ -38,7 +34,7 @@ const FormSchema = z.object({
   }),
   value: z
     .number({
-      required_error: "Informe o valor da transação",
+      required_error: "Informe o valor do novo limite",
       invalid_type_error: "Informe um valor numérico válido",
     })
     .positive("O valor deve ser maior que 0")
@@ -47,87 +43,47 @@ const FormSchema = z.object({
     }),
 });
 
-type TransactionFormProps = {
-  type: TransactionTypeEnum;
-};
-
-export function TransactionForm({ type }: TransactionFormProps) {
+export function LimitForm() {
   const session = useSession();
   const clientId = session.data?.user?.id;
 
   const getAccountsQuery = useGetAccountsQuery(clientId ?? 0);
 
-  const createTransactionMutation = useCreateTransactionMutation(
-    session.data?.access_token,
-    clientId ?? 0,
-    type
+  const updateLimitMutation = useUpdateAccountMutation(
+    session.data?.access_token
   );
 
-  const totalBalance = getAccountsQuery.data?.reduce(
-    (acc, account) => acc + (account.balance ?? 0),
-    0
-  );
+  const handleUpdateAccountLimit = async (data: z.infer<typeof FormSchema>) => {
+    const accountNumber = data.account;
+    const accountId =
+      getAccountsQuery.data?.find(
+        (account) => account.account_number === accountNumber
+      )?.id ?? 0;
 
-  async function handleCreateTransaction({
-    account,
-    value,
-  }: z.infer<typeof FormSchema>) {
-    if (value <= 0) {
+    const previousAccountLimit =
+      getAccountsQuery.data?.find(
+        (account) => account.account_number === accountNumber
+      )?.limit ?? 0;
+
+    if (previousAccountLimit > data.value) {
+      toast.error("O novo limite deve ser maior que o limite atual", {
+        style: {
+          background: "red",
+          color: "white",
+        },
+      });
       return;
     }
 
-    const selectedAccount = getAccountsQuery.data?.find(
-      (acc) => acc.account_number === account
-    );
+    const value = data.value;
 
-    const balanceMoreLimit =
-      (selectedAccount?.balance ?? 0) + (selectedAccount?.limit ?? 0);
-
-    if (
-      type === TransactionTypeEnum.DEBIT &&
-      selectedAccount &&
-      value > balanceMoreLimit
-    ) {
-      toast.error(
-        "Saldo (Saldo + limite) insuficiente para realizar o transação",
-        {
-          style: {
-            background: "red",
-            color: "white",
-          },
-        }
-      );
-      return;
-    }
-
-    let newValue: number = value;
-    if (
-      type === TransactionTypeEnum.CREDIT &&
-      totalBalance &&
-      value > totalBalance
-    ) {
-      newValue = value - 0.1 * value;
-      toast.warning(
-        "Valor maior que o saldo total das contas, aplicando desconto de 10%",
-
-        {
-          style: {
-            background: "yellow",
-            color: "black",
-          },
-        }
-      );
-    }
-
-    createTransactionMutation.mutateAsync({
-      accountNumber: account,
-      value: newValue,
-      operation:
-        type === TransactionTypeEnum.DEBIT
-          ? TransactionOperationEnum.WITHDRAW
-          : TransactionOperationEnum.DEPOSIT,
+    await updateLimitMutation.mutateAsync({
+      accountId,
+      accountNumber,
+      value,
+      clientId: clientId ?? 0,
     });
-  }
+  };
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -141,14 +97,14 @@ export function TransactionForm({ type }: TransactionFormProps) {
       <Toaster position="top-right" />
       <form
         className="flex flex-col gap-4"
-        onSubmit={form.handleSubmit(handleCreateTransaction)}
+        onSubmit={form.handleSubmit(handleUpdateAccountLimit)}
       >
         <div className="flex flex-col md:flex-row gap-4">
           <FormField
             control={form.control}
             name="account"
             render={({ field }) => (
-              <FormItem className="flex flex-col w-2xl max-[768px]:text-sm max-[768px]:w-70">
+              <FormItem className="flex flex-col w-96 max-[768px]:text-sm max-[768px]:w-70">
                 <FormLabel>Conta</FormLabel>
                 <Select
                   value={field.value}
@@ -167,9 +123,7 @@ export function TransactionForm({ type }: TransactionFormProps) {
                         key={account.account_number}
                         value={account.account_number}
                       >
-                        {account.account_number} - Saldo Atual: R$
-                        {account.balance.toFixed(2)} - Limite Atual: R$
-                        {account.limit.toFixed(2)}
+                        {account.account_number}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -187,12 +141,12 @@ export function TransactionForm({ type }: TransactionFormProps) {
             name="value"
             render={({ field }) => (
               <FormItem className="flex flex-col w-auto">
-                <FormLabel>Valor da transação</FormLabel>
+                <FormLabel>Valor do novo limite</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Digite o valor da transação"
                     type="number"
-                    step="0.01"
+                    step="1"
                     min="0"
                     className="w-full bg-org-d-pessego text-lg md:text-base lg:text-lg max-[768px]:text-sm max-[768px]:h-10 max-[375px]:text-xs max-[375px]:h-8"
                     {...field}
@@ -217,10 +171,10 @@ export function TransactionForm({ type }: TransactionFormProps) {
         <div className="flex justify-start">
           <Button
             type="submit"
-            className="bg-org-d-green hover:bg-green-800 text-org-d-pessego font-semibold rounded-2xl w-32"
+            className="bg-org-d-green hover:bg-green-800 text-org-d-pessego font-semibold rounded-2xl w-40"
           >
             <H4 className="text-org-d-pessego font-semibold">
-              {type === TransactionTypeEnum.DEBIT ? "Saque" : "Depósito"}
+              Atualizar limite
             </H4>
           </Button>
         </div>

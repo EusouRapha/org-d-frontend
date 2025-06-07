@@ -26,19 +26,23 @@ import { z } from "zod";
 import {
   useCreateTransactionMutation,
   useGetAccountsQuery,
+  useGetAllAccountsQuery,
 } from "../hooks/use-transaction-queries";
 import {
   TransactionOperationEnum,
   TransactionTypeEnum,
 } from "../transaction-constants";
 
-const FormSchema = z.object({
-  account: z.string({
-    required_error: "Selecione uma conta",
+const TransferFormSchema = z.object({
+  sourceAccount: z.string({
+    required_error: "Selecione a conta de origem",
+  }),
+  destinationAccount: z.string({
+    required_error: "Selecione a conta de destino",
   }),
   value: z
     .number({
-      required_error: "Informe o valor da transação",
+      required_error: "Informe o valor da transferência",
       invalid_type_error: "Informe um valor numérico válido",
     })
     .positive("O valor deve ser maior que 0")
@@ -47,49 +51,79 @@ const FormSchema = z.object({
     }),
 });
 
-type TransactionFormProps = {
-  type: TransactionTypeEnum;
-};
-
-export function TransactionForm({ type }: TransactionFormProps) {
+export function TransferForm() {
   const session = useSession();
   const clientId = session.data?.user?.id;
 
   const getAccountsQuery = useGetAccountsQuery(clientId ?? 0);
+  const getallAccountsQuery = useGetAllAccountsQuery();
 
-  const createTransactionMutation = useCreateTransactionMutation(
-    session.data?.access_token,
-    clientId ?? 0,
-    type
-  );
+  const form = useForm<z.infer<typeof TransferFormSchema>>({
+    resolver: zodResolver(TransferFormSchema),
+    defaultValues: {
+      value: 0,
+    },
+  });
 
   const totalBalance = getAccountsQuery.data?.reduce(
     (acc, account) => acc + (account.balance ?? 0),
     0
   );
 
-  async function handleCreateTransaction({
-    account,
+  const createTransactionMutation = useCreateTransactionMutation(
+    session.data?.access_token,
+    clientId ?? 0,
+    TransactionTypeEnum.DEBIT
+  );
+
+  async function handleTransfer({
+    sourceAccount,
+    destinationAccount,
     value,
-  }: z.infer<typeof FormSchema>) {
-    if (value <= 0) {
+  }: z.infer<typeof TransferFormSchema>) {
+    const sourceAccountData = getAccountsQuery.data?.find(
+      (acc) => acc.account_number === sourceAccount
+    );
+
+    const destinationAccountData = getallAccountsQuery.data?.find(
+      (acc) => acc.account_number === destinationAccount
+    );
+
+    if (
+      sourceAccountData?.account_number ===
+      destinationAccountData?.account_number
+    ) {
+      toast.error("Conta de origem e destino não podem ser iguais", {
+        style: {
+          background: "red",
+          color: "white",
+        },
+      });
       return;
     }
 
-    const selectedAccount = getAccountsQuery.data?.find(
-      (acc) => acc.account_number === account
-    );
-
-    const balanceMoreLimit =
-      (selectedAccount?.balance ?? 0) + (selectedAccount?.limit ?? 0);
-
     if (
-      type === TransactionTypeEnum.DEBIT &&
-      selectedAccount &&
-      value > balanceMoreLimit
+      sourceAccountData?.balance !== undefined &&
+      sourceAccountData.balance < 0
     ) {
       toast.error(
-        "Saldo (Saldo + limite) insuficiente para realizar o transação",
+        "Conta de origem está com saldo negativo, não é possível realizar a transferência",
+        {
+          style: {
+            background: "red",
+            color: "white",
+          },
+        }
+      );
+      return;
+    }
+
+    const balanceMoreLimit =
+      (sourceAccountData?.balance ?? 0) + (sourceAccountData?.limit ?? 0);
+
+    if (value > balanceMoreLimit) {
+      toast.error(
+        "Saldo (Saldo + limite) insuficiente na conta de origem para realizar a transferência",
         {
           style: {
             background: "red",
@@ -101,11 +135,7 @@ export function TransactionForm({ type }: TransactionFormProps) {
     }
 
     let newValue: number = value;
-    if (
-      type === TransactionTypeEnum.CREDIT &&
-      totalBalance &&
-      value > totalBalance
-    ) {
+    if (totalBalance && value > totalBalance) {
       newValue = value - 0.1 * value;
       toast.warning(
         "Valor maior que o saldo total das contas, aplicando desconto de 10%",
@@ -120,36 +150,34 @@ export function TransactionForm({ type }: TransactionFormProps) {
     }
 
     createTransactionMutation.mutateAsync({
-      accountNumber: account,
+      accountNumber: sourceAccount,
       value: newValue,
-      operation:
-        type === TransactionTypeEnum.DEBIT
-          ? TransactionOperationEnum.WITHDRAW
-          : TransactionOperationEnum.DEPOSIT,
+      operation: TransactionOperationEnum.TRANSFER,
+      transferType: TransactionTypeEnum.DEBIT,
+    });
+
+    createTransactionMutation.mutateAsync({
+      accountNumber: destinationAccount,
+      value: newValue,
+      operation: TransactionOperationEnum.TRANSFER,
+      transferType: TransactionTypeEnum.CREDIT,
     });
   }
-
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
-    defaultValues: {
-      value: 0,
-    },
-  });
 
   return (
     <Form {...form}>
       <Toaster position="top-right" />
       <form
         className="flex flex-col gap-4"
-        onSubmit={form.handleSubmit(handleCreateTransaction)}
+        onSubmit={form.handleSubmit(handleTransfer)}
       >
         <div className="flex flex-col md:flex-row gap-4">
           <FormField
             control={form.control}
-            name="account"
+            name="sourceAccount"
             render={({ field }) => (
-              <FormItem className="flex flex-col w-2xl max-[768px]:text-sm max-[768px]:w-70">
-                <FormLabel>Conta</FormLabel>
+              <FormItem className="flex flex-col w-72 max-[768px]:text-sm max-[768px]:w-70">
+                <FormLabel>Conta de Origem</FormLabel>
                 <Select
                   value={field.value}
                   onValueChange={(value) => {
@@ -158,7 +186,7 @@ export function TransactionForm({ type }: TransactionFormProps) {
                 >
                   <FormControl>
                     <SelectTrigger className="w-full bg-org-d-pessego text-lg md:text-base lg:text-lg max-[768px]:text-sm max-[768px]:h-10 max-[375px]:text-xs max-[375px]:h-8">
-                      <SelectValue placeholder="Selecione uma conta" />
+                      <SelectValue placeholder="Selecione a conta de origem" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -184,13 +212,51 @@ export function TransactionForm({ type }: TransactionFormProps) {
 
           <FormField
             control={form.control}
+            name="destinationAccount"
+            render={({ field }) => (
+              <FormItem className="flex flex-col w-72 max-[768px]:text-sm max-[768px]:w-70">
+                <FormLabel>Conta de Destino</FormLabel>
+                <Select
+                  value={field.value}
+                  onValueChange={(value) => {
+                    field.onChange(value);
+                  }}
+                >
+                  <FormControl>
+                    <SelectTrigger className="w-full bg-org-d-pessego text-lg md:text-base lg:text-lg max-[768px]:text-sm max-[768px]:h-10 max-[375px]:text-xs max-[375px]:h-8">
+                      <SelectValue placeholder="Selecione a conta de destino" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {getallAccountsQuery.data?.map((account) => (
+                      <SelectItem
+                        key={account.account_number}
+                        value={account.account_number}
+                      >
+                        {account.account_number} - Saldo Atual: R$
+                        {account.balance.toFixed(2)} - Limite Atual: R$
+                        {account.limit.toFixed(2)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                <div className="mt-1">
+                  <FormMessage />
+                </div>
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
             name="value"
             render={({ field }) => (
-              <FormItem className="flex flex-col w-auto">
-                <FormLabel>Valor da transação</FormLabel>
+              <FormItem className="flex flex-col w-64 max-[768px]:text-sm max-[768px]:w-70">
+                <FormLabel>Valor da transferência</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Digite o valor da transação"
+                    placeholder="Digite o valor da transferência"
                     type="number"
                     step="0.01"
                     min="0"
@@ -214,14 +280,13 @@ export function TransactionForm({ type }: TransactionFormProps) {
             )}
           />
         </div>
+
         <div className="flex justify-start">
           <Button
             type="submit"
             className="bg-org-d-green hover:bg-green-800 text-org-d-pessego font-semibold rounded-2xl w-32"
           >
-            <H4 className="text-org-d-pessego font-semibold">
-              {type === TransactionTypeEnum.DEBIT ? "Saque" : "Depósito"}
-            </H4>
+            <H4 className="text-org-d-pessego font-semibold">Transferir</H4>
           </Button>
         </div>
       </form>

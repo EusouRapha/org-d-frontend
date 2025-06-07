@@ -12,6 +12,7 @@ type Launch = {
   value: number;
   type: "CREDIT" | "DEBIT";
   date: Date;
+  operation: string;
 };
 
 export function useGetAccountsQuery(clientId: number | undefined) {

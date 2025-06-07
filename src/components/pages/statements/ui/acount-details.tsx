@@ -31,7 +31,14 @@ export default function AccountDetails({
                   <P>
                     Data: {new Date(launch.date).toLocaleDateString("pt-BR")} -
                     Tipo: {launch.type === "CREDIT" ? "Crédito" : "Débito"} -
-                    Valor: R$ {Number(launch.value).toFixed(2)}
+                    Valor: R$ {Number(launch.value).toFixed(2)} - Operação:{" "}
+                    {launch.operation === "TRANSFER"
+                      ? "Transferência"
+                      : launch.operation === "DEPOSIT"
+                      ? "Depósito"
+                      : launch.operation === "WITHDRAW"
+                      ? "Saque"
+                      : "Transação"}
                   </P>
                 </div>
               ))

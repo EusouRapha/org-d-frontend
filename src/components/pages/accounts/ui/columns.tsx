@@ -6,7 +6,8 @@ import { ColumnDef } from "@tanstack/react-table";
 // You can use a Zod schema here if you want.
 export type Account = {
   account_number: string;
-  balance: number;
+  balance?: number;
+  limit?: number;
 };
 
 export const columns: ColumnDef<Account>[] = [
@@ -31,6 +32,19 @@ export const columns: ColumnDef<Account>[] = [
       }).format(amount);
 
       return <div className="text-right font-medium">{formatted}</div>;
+    },
+  },
+  {
+    accessorKey: "limit",
+    header: () => <div className="text-right">Limite</div>,
+    cell: ({ row }) => {
+      const limitAmount = parseFloat(row.getValue("limit"));
+      const formattedLimit = new Intl.NumberFormat("pt-br", {
+        style: "currency",
+        currency: "BRL",
+      }).format(limitAmount);
+
+      return <div className="text-right font-medium">{formattedLimit}</div>;
     },
   },
 ];

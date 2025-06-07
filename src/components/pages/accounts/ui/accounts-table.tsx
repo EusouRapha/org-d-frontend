@@ -24,6 +24,7 @@ import Pagination from "./pagination";
 import { useGetAccountsQuery } from "../hooks/use-accounts-queries";
 import { Account } from "./columns";
 import { Skeleton } from "@/components/ui/skeleton";
+import { LimitForm } from "./limit-form";
 
 interface DataTableProps<TValue> {
   columns: ColumnDef<Account, TValue>[];
@@ -40,7 +41,7 @@ export function AccountsTable<TValue>({
 
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
-    pageSize: 5,
+    pageSize: 2,
   });
 
   const handleChangePageIndex = (pageIndex: number) => {
@@ -51,6 +52,11 @@ export function AccountsTable<TValue>({
   };
 
   const getAccountsQuery = useGetAccountsQuery(clientId);
+
+  const totalBalance = getAccountsQuery.data?.reduce(
+    (acc, account) => acc + (account.balance ?? 0),
+    0
+  );
 
   const table = useReactTable({
     data: getAccountsQuery.data ?? [],
@@ -70,6 +76,7 @@ export function AccountsTable<TValue>({
 
   return (
     <>
+      <LimitForm />
       <div className="flex items-center py-4 max-[768px]:flex-col max-[768px]:gap-2 ">
         <Input
           placeholder="Busque por numeros da conta"
@@ -155,6 +162,14 @@ export function AccountsTable<TValue>({
           table={table}
           handleChangePageIndex={handleChangePageIndex}
         />
+      </div>
+      <div className="flex items-center justify-between space-x-2 max-[768px]:flex-col max-[768px]:space-x-0 max-[768px]:gap-2">
+        <div className="text-sm text-gray-600">
+          {`Saldo total das contas: ${new Intl.NumberFormat("pt-br", {
+            style: "currency",
+            currency: "BRL",
+          }).format(totalBalance ?? 0)}`}
+        </div>
       </div>
     </>
   );
