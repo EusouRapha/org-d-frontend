@@ -31,10 +31,7 @@ export default function DepositPage() {
 
             <div className="flex items-center justify-between space-x-2 max-[768px]:flex-col max-[768px]:space-x-0 max-[768px]:gap-2">
               <div className="text-sm text-gray-600">
-                {`Saldo total das contas: ${new Intl.NumberFormat("pt-br", {
-                  style: "currency",
-                  currency: "BRL",
-                }).format(totalBalance ?? 0)}`}
+                {`Saldo total das contas:  R$${totalBalance ?? 0}`}
               </div>
             </div>
           </div>

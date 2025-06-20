@@ -65,15 +65,9 @@ export function TransferForm() {
     },
   });
 
-  const totalBalance = getAccountsQuery.data?.reduce(
-    (acc, account) => acc + (account.balance ?? 0),
-    0
-  );
-
   const createTransactionMutation = useCreateTransactionMutation(
     session.data?.access_token,
-    clientId ?? 0,
-    TransactionTypeEnum.DEBIT
+    clientId ?? 0
   );
 
   async function handleTransfer({
@@ -134,31 +128,16 @@ export function TransferForm() {
       return;
     }
 
-    let newValue: number = value;
-    if (totalBalance && value > totalBalance) {
-      newValue = value - 0.1 * value;
-      toast.warning(
-        "Valor maior que o saldo total das contas, aplicando desconto de 10%",
-
-        {
-          style: {
-            background: "yellow",
-            color: "black",
-          },
-        }
-      );
-    }
-
     createTransactionMutation.mutateAsync({
       accountNumber: sourceAccount,
-      value: newValue,
+      value: value,
       operation: TransactionOperationEnum.TRANSFER,
       transferType: TransactionTypeEnum.DEBIT,
     });
 
     createTransactionMutation.mutateAsync({
       accountNumber: destinationAccount,
-      value: newValue,
+      value: value,
       operation: TransactionOperationEnum.TRANSFER,
       transferType: TransactionTypeEnum.CREDIT,
     });
