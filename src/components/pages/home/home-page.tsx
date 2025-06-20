@@ -3,10 +3,17 @@ import { CardButton } from "@/components/ui/card-button";
 import { H1 } from "@/components/ui/typography";
 import {
   handleAccountsRedirect,
+  handleProfileRedirect,
   handleStatementRedirect,
   handleTransactionsRedirect,
 } from "@/lib/utils";
-import { BanknoteArrowDown, LogOut, Receipt, UserPlus } from "lucide-react";
+import {
+  BanknoteArrowDown,
+  LogOut,
+  Receipt,
+  UserCog,
+  UserPlus,
+} from "lucide-react";
 import { signOut } from "next-auth/react";
 
 export default function HomePage() {
@@ -25,6 +32,11 @@ export default function HomePage() {
       label: "Extrato",
       icon: <Receipt size={48} />,
       onClick: () => handleStatementRedirect(),
+    },
+    {
+      label: "Perfil",
+      icon: <UserCog size={48} />,
+      onClick: () => handleProfileRedirect(),
     },
     {
       label: "Sair",
@@ -46,7 +58,7 @@ export default function HomePage() {
             key={button.label}
             icon={button.icon}
             onClick={button.onClick}
-            className="max-[1650px]:w-56 max-[1650px]:h-32 max-[1200px]:w-48 max-[1200px]:h-28 max-[768px]:w-40 max-[768px]:h-24 flex justify-center items-center"
+            className="max-[1650px]:w-56 max-[1650px]:h-20 max-[1200px]:w-56 max-[1200px]:h-20 max-[768px]:w-56 max-[768px]:h-18 flex justify-center items-center"
           >
             {button.label}
           </CardButton>

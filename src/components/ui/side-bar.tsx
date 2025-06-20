@@ -3,6 +3,7 @@
 import {
   handleAccountsRedirect,
   handleHomeRedirect,
+  handleProfileRedirect,
   handleStatementRedirect,
   handleTransactionsRedirect,
 } from "@/lib/utils";
@@ -12,6 +13,7 @@ import {
   House,
   LogOut,
   Receipt,
+  UserCog,
   UserPlus,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
@@ -24,7 +26,7 @@ type ActionType = {
 };
 
 export default function Sidebar() {
-  const actions: ActionType[] = [
+  const topActions: ActionType[] = [
     {
       label: "Home",
       icon: (
@@ -67,6 +69,29 @@ export default function Sidebar() {
     },
   ];
 
+  const downActions: ActionType[] = [
+    {
+      label: "Perfil",
+      icon: (
+        <UserCog
+          size={30}
+          className="max-[768px]:w-6 max-[768px]:h-6 max-[768px]:ml-1"
+        />
+      ),
+      onClick: () => handleProfileRedirect(),
+    },
+    {
+      label: "Sair",
+      icon: (
+        <LogOut
+          size={30}
+          className="max-[768px]:w-6 max-[768px]:h-6 max-[768px]:ml-1"
+        />
+      ),
+      onClick: () => signOut(),
+    },
+  ];
+
   return (
     <div
       suppressHydrationWarning
@@ -83,7 +108,7 @@ export default function Sidebar() {
         suppressHydrationWarning
         className="flex flex-col p-4 flex-grow gap-2 max-[768px]:p-2 max-[375px]:p-1"
       >
-        {actions.map((action) => (
+        {topActions.map((action) => (
           <IconButton
             key={action.label}
             icon={action.icon}
@@ -97,21 +122,18 @@ export default function Sidebar() {
         ))}
       </nav>
       <nav className="flex flex-col pb-20 pl-4 p-4 max-[768px]:pb-10 max-[768px]:pl-2 max-[375px]:pb-8 max-[375px]:pl-1">
-        <IconButton
-          icon={
-            <LogOut
-              suppressHydrationWarning
-              size={30}
-              className="max-[768px]:w-6 max-[768px]:h-6 max-[375px]:w-5 max-[375px]:h-5 max-[768px]:ml-1"
-            />
-          }
-          label={
-            <span className="text-org-d-pessego font-semibold text-xl max-[768px]:hidden">
-              Sair
-            </span>
-          }
-          onClick={() => signOut()}
-        />
+        {downActions.map((action) => (
+          <IconButton
+            key={action.label}
+            icon={action.icon}
+            label={
+              <span className="text-org-d-pessego font-semibold text-xl max-[768px]:hidden ">
+                {action.label}
+              </span>
+            }
+            onClick={action.onClick}
+          />
+        ))}
       </nav>
     </div>
   );

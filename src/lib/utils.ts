@@ -24,3 +24,7 @@ export function handleStatementRedirect() {
 export function handleHomeRedirect() {
   window.location.href = "/";
 }
+
+export function handleProfileRedirect() {
+  window.location.href = "/perfil";
+}
