@@ -69,7 +69,7 @@ export default function Sidebar() {
     },
   ];
 
-  const downActions: ActionType[] = [
+  const bottomActions: ActionType[] = [
     {
       label: "Perfil",
       icon: (
@@ -129,7 +129,7 @@ export default function Sidebar() {
         ))}
       </nav>
       <nav className="flex flex-col pb-20 pl-4 p-4 max-[768px]:pb-10 max-[768px]:pl-2 max-[375px]:pb-8 max-[375px]:pl-1 max-[320px]:pb-6 max-[320px]:pl-0.5">
-        {downActions.map((action) => (
+        {bottomActions.map((action) => (
           <IconButton
             key={action.label}
             icon={action.icon}
