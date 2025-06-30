@@ -150,13 +150,15 @@ export function TransferForm() {
         className="flex flex-col gap-4"
         onSubmit={form.handleSubmit(handleTransfer)}
       >
-        <div className="flex flex-col md:flex-row gap-4">
+        <div className="flex flex-row max-xl:flex-col gap-4">
           <FormField
             control={form.control}
             name="sourceAccount"
             render={({ field }) => (
-              <FormItem className="flex flex-col w-72 max-[768px]:text-sm max-[768px]:w-70">
-                <FormLabel>Conta de Origem</FormLabel>
+              <FormItem className="flex flex-col w-72 max-[768px]:text-sm max-[768px]:w-70 max-[375px]:w-full max-[320px]:w-full">
+                <FormLabel className="truncate max-w-full">
+                  Conta de Origem
+                </FormLabel>
                 <Select
                   value={field.value}
                   onValueChange={(value) => {
@@ -174,9 +176,7 @@ export function TransferForm() {
                         key={account.account_number}
                         value={account.account_number}
                       >
-                        {account.account_number} - Saldo Atual: R$
-                        {account.balance.toFixed(2)} - Limite Atual: R$
-                        {account.limit.toFixed(2)}
+                        {account.account_number}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -212,9 +212,7 @@ export function TransferForm() {
                         key={account.account_number}
                         value={account.account_number}
                       >
-                        {account.account_number} - Saldo Atual: R$
-                        {account.balance.toFixed(2)} - Limite Atual: R$
-                        {account.limit.toFixed(2)}
+                        {account.account_number}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -232,7 +230,9 @@ export function TransferForm() {
             name="value"
             render={({ field }) => (
               <FormItem className="flex flex-col w-64 max-[768px]:text-sm max-[768px]:w-70">
-                <FormLabel>Valor da transferência</FormLabel>
+                <FormLabel className="truncate max-w-full">
+                  Valor da transferência
+                </FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Digite o valor da transferência"

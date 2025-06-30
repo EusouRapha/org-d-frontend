@@ -119,13 +119,13 @@ export function TransactionForm({ type }: TransactionFormProps) {
         className="flex flex-col gap-4"
         onSubmit={form.handleSubmit(handleCreateTransaction)}
       >
-        <div className="flex flex-col md:flex-row gap-4">
+        <div className="flex flex-col lg:flex-row gap-4 max-[768px]:gap-2 max-[375px]:gap-1">
           <FormField
             control={form.control}
             name="account"
             render={({ field }) => (
-              <FormItem className="flex flex-col w-2xl max-[768px]:text-sm max-[768px]:w-70">
-                <FormLabel>Conta</FormLabel>
+              <FormItem className="flex flex-col w-xl max-[1024px]:w-64 max-[768px]:w-full max-[768px]:text-sm">
+                <FormLabel className="truncate max-w-full">Conta</FormLabel>
                 <Select
                   value={field.value}
                   onValueChange={(value) => {
@@ -162,8 +162,10 @@ export function TransactionForm({ type }: TransactionFormProps) {
             control={form.control}
             name="value"
             render={({ field }) => (
-              <FormItem className="flex flex-col w-auto">
-                <FormLabel>Valor da transação</FormLabel>
+              <FormItem className="flex flex-col w-64 max-[1024px]:w-56 max-[768px]:w-full max-[768px]:text-sm">
+                <FormLabel className="truncate max-w-full">
+                  Valor da transação
+                </FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Digite o valor da transação"
