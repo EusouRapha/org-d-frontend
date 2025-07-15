@@ -23,18 +23,15 @@ export default function DepositPage() {
         Transações
       </H1>
       <div className="flex flex-col justify-center items-center h-screen mx-auto px-4 max-[768px]:px-2 max-[375px]:px-1">
-        <div className="flex flex-col h-3/4 gap-16 max-[768px]:gap-8 max-[375px]:gap-4">
-          <div className="flex flex-col justify-center align-center gap-8 max-[768px]:gap-4 max-[375px]:gap-2">
+        <div className="flex flex-col w-2/3 h-3/4 gap-16 max-[768px]:w-full max-[768px]:h-auto max-[768px]:gap-8 max-[375px]:gap-4 max-[320px]:gap-2">
+          <div className="flex flex-col justify-center align-center gap-8 max-[768px]:gap-4 max-[375px]:gap-2 max-[320px]:gap-1">
             <TransactionForm type={TransactionTypeEnum.CREDIT} />
             <TransactionForm type={TransactionTypeEnum.DEBIT} />
             <TransferForm />
 
             <div className="flex items-center justify-between space-x-2 max-[768px]:flex-col max-[768px]:space-x-0 max-[768px]:gap-2">
               <div className="text-sm text-gray-600">
-                {`Saldo total das contas: ${new Intl.NumberFormat("pt-br", {
-                  style: "currency",
-                  currency: "BRL",
-                }).format(totalBalance ?? 0)}`}
+                {`Saldo total das contas:  R$${totalBalance ?? 0}`}
               </div>
             </div>
           </div>

@@ -63,11 +63,6 @@ export function TransactionForm({ type }: TransactionFormProps) {
     type
   );
 
-  const totalBalance = getAccountsQuery.data?.reduce(
-    (acc, account) => acc + (account.balance ?? 0),
-    0
-  );
-
   async function handleCreateTransaction({
     account,
     value,
@@ -100,28 +95,9 @@ export function TransactionForm({ type }: TransactionFormProps) {
       return;
     }
 
-    let newValue: number = value;
-    if (
-      type === TransactionTypeEnum.CREDIT &&
-      totalBalance &&
-      value > totalBalance
-    ) {
-      newValue = value - 0.1 * value;
-      toast.warning(
-        "Valor maior que o saldo total das contas, aplicando desconto de 10%",
-
-        {
-          style: {
-            background: "yellow",
-            color: "black",
-          },
-        }
-      );
-    }
-
     createTransactionMutation.mutateAsync({
       accountNumber: account,
-      value: newValue,
+      value: value,
       operation:
         type === TransactionTypeEnum.DEBIT
           ? TransactionOperationEnum.WITHDRAW
@@ -143,13 +119,13 @@ export function TransactionForm({ type }: TransactionFormProps) {
         className="flex flex-col gap-4"
         onSubmit={form.handleSubmit(handleCreateTransaction)}
       >
-        <div className="flex flex-col md:flex-row gap-4">
+        <div className="flex flex-col lg:flex-row gap-4 max-[768px]:gap-2 max-[375px]:gap-1">
           <FormField
             control={form.control}
             name="account"
             render={({ field }) => (
-              <FormItem className="flex flex-col w-2xl max-[768px]:text-sm max-[768px]:w-70">
-                <FormLabel>Conta</FormLabel>
+              <FormItem className="flex flex-col w-xl max-[1024px]:w-64 max-[768px]:w-full max-[768px]:text-sm">
+                <FormLabel className="truncate max-w-full">Conta</FormLabel>
                 <Select
                   value={field.value}
                   onValueChange={(value) => {
@@ -186,8 +162,10 @@ export function TransactionForm({ type }: TransactionFormProps) {
             control={form.control}
             name="value"
             render={({ field }) => (
-              <FormItem className="flex flex-col w-auto">
-                <FormLabel>Valor da transação</FormLabel>
+              <FormItem className="flex flex-col w-64 max-[1024px]:w-56 max-[768px]:w-full max-[768px]:text-sm">
+                <FormLabel className="truncate max-w-full">
+                  Valor da transação
+                </FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Digite o valor da transação"

@@ -1,12 +1,15 @@
 import api from "@/app/api/auth/[...nextauth]/axios";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { TransactionOperationEnum, TransactionTypeEnum } from "../transaction-constants";
+import {
+  TransactionOperationEnum,
+  TransactionTypeEnum,
+} from "../transaction-constants";
 
 type Account = {
   account_number: string;
   balance: number;
-  limit: number
+  limit: number;
 };
 
 export function useGetAccountsQuery(clientId: number | undefined) {
@@ -29,18 +32,23 @@ export function useGetAllAccountsQuery() {
 export function useCreateTransactionMutation(
   access_token: string | undefined,
   clientId: number,
-  type: TransactionTypeEnum,
+  type?: TransactionTypeEnum
 ) {
   const queryClient = useQueryClient();
   const mutation = useMutation({
-    mutationFn: (data: { accountNumber: string; value: number, operation: TransactionOperationEnum, transferType?: TransactionTypeEnum  }) => {
+    mutationFn: (data: {
+      accountNumber: string;
+      value: number;
+      operation: TransactionOperationEnum;
+      transferType?: TransactionTypeEnum;
+    }) => {
       const token = access_token ?? "";
       return api.post(
         "launches",
         {
           account_number: data.accountNumber,
           value: data.value,
-          type: data.transferType ?? type,
+          type: type ?? data.transferType,
           operation: data.operation,
         },
         {

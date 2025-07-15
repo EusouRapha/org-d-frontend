@@ -24,7 +24,10 @@ export default function RootLayout({
 }>) {
   return (
     <html suppressHydrationWarning lang="en" className="w-full h-full">
-      <body className={`${redHatDisplay.className} antialiased w-full h-full`}>
+      <body
+        suppressHydrationWarning
+        className={`${redHatDisplay.className} antialiased w-full h-full`}
+      >
         <AppWrapper session={session}>{children}</AppWrapper>
       </body>
     </html>

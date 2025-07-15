@@ -11,22 +11,29 @@ export default function AppWrapper({
   children: React.ReactNode;
   session: never;
 }) {
-  const pathname = usePathname(); 
-  const isLoginPage = pathname === "/login"; 
-  const isRegisterPage = pathname === "/registrar"; 
+  const pathname = usePathname();
+  const isLoginPage = pathname === "/login";
+  const isRegisterPage = pathname === "/registrar";
   return (
     <SessionProvider session={session}>
       <ReactQueryWrapper>
         {!isLoginPage && !isRegisterPage ? (
-          <div
-            suppressHydrationWarning
-            className="flex flex-row h-screen overflow-hidden"
-          >
+          <div suppressHydrationWarning className="min-h-screen">
             <Sidebar />
-            <main className="flex-grow bg-org-d-pessego">{children}</main>
+            <main
+              suppressHydrationWarning
+              className="bg-org-d-pessego min-h-screen ml-[200px] max-[768px]:ml-20 max-[375px]:ml-16 max-[320px]:ml-14"
+            >
+              {children}
+            </main>
           </div>
         ) : (
-          <main suppressHydrationWarning>{children}</main>
+          <main
+            suppressHydrationWarning
+            className="min-h-screen bg-org-d-pessego"
+          >
+            {children}
+          </main>
         )}
       </ReactQueryWrapper>
     </SessionProvider>
